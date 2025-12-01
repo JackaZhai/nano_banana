@@ -5,10 +5,18 @@ from typing import Any, Dict, List, Optional
 import requests
 from flask import Flask, jsonify, render_template, request
 
+try:
+    import config  # type: ignore
+except ImportError:
+    config = None
+
 app = Flask(__name__)
 
-API_HOST = os.getenv("NANO_BANANA_HOST", "https://grsai.dakka.com.cn")
-API_KEY = os.getenv("NANO_BANANA_API_KEY", "")
+CONFIG_HOST = getattr(config, "API_HOST", None) if config else None
+CONFIG_KEY = getattr(config, "API_KEY", None) if config else None
+
+API_HOST = CONFIG_HOST or os.getenv("NANO_BANANA_HOST", "https://grsai.dakka.com.cn")
+API_KEY = CONFIG_KEY or os.getenv("NANO_BANANA_API_KEY", "")
 HAS_API_KEY = bool(API_KEY)
 DRAW_ENDPOINT = f"{API_HOST.rstrip('/')}/v1/draw/nano-banana"
 RESULT_ENDPOINT = f"{API_HOST.rstrip('/')}/v1/draw/result"
