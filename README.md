@@ -10,13 +10,17 @@
    pip install -r requirements.txt
    ```
 
-2. 配置环境变量（必填）：
+2. 配置密钥（任选其一，务必填写真实 Key）：
 
-   ```bash
-   export NANO_BANANA_API_KEY=<你的 api key>
-   # 可选：切换节点
-   export NANO_BANANA_HOST=https://grsai.dakka.com.cn
-   ```
+   - **环境变量方式**：
+
+     ```bash
+     export NANO_BANANA_API_KEY=<你的 api key>
+     # 可选：切换节点
+     export NANO_BANANA_HOST=https://grsai.dakka.com.cn
+     ```
+
+   - **本地配置文件**：编辑根目录下的 `config.py`，将 `API_KEY` 替换为真实值（如需自定义节点，也可同步修改 `API_HOST`）。
 
 3. 运行服务：
 
