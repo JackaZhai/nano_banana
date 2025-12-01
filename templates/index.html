@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nano Banana 绘画体验站</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+  <body>
+    <div class="page">
+      {% if not has_api_key %}
+      <div class="notice notice--warning">
+        后端未检测到 <code>NANO_BANANA_API_KEY</code> 环境变量，请在服务器上设置后再提交任务。
+      </div>
+      {% endif %}
+      <header class="hero">
+        <div class="hero__text">
+          <p class="eyebrow">Nano Banana · 文生图接口体验</p>
+        <h1>用几行文字召唤灵感</h1>
+        <p class="lede">一站式体验 nano-banana 绘画接口，实时查看进度、下载高质成品，快速验证提示词效果。</p>
+        <div class="badges">
+          <span class="badge">Python 后端代理</span>
+          <span class="badge">轮询结果接口</span>
+          <span class="badge">即时进度反馈</span>
+        </div>
+      </div>
+      <div class="hero__card">
+        <div class="hero__glow"></div>
+        <div class="hero__content">
+          <p class="mini-label">默认直连节点</p>
+          <div class="hero__endpoint">{{ api_host }}/v1/draw/nano-banana</div>
+          <p class="mini-label">接口说明</p>
+          <ul class="hero__list">
+            <li>模型：nano-banana-fast / nano-banana / nano-banana-pro</li>
+            <li>支持比例：auto, 1:1, 16:9, 9:16, 4:3, 3:4, 3:2, 2:3, 5:4, 4:5, 21:9</li>
+            <li>结果：默认轮询 /v1/draw/result 获取</li>
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout layout--split">
+      <section class="panel panel--primary">
+        <div class="panel__header">
+          <div>
+            <p class="eyebrow">构图参数</p>
+            <h2>填写提示词，点击生成</h2>
+          </div>
+          <button class="secondary" id="resetBtn" type="button">重置表单</button>
+        </div>
+
+        <form id="drawForm" class="form-grid">
+          <label class="form-field">
+            <span>提示词 <strong>*</strong></span>
+            <textarea id="prompt" name="prompt" rows="3" placeholder="一只科幻机械猫站在霓虹城市中央，蓝紫色光影，超写实"></textarea>
+          </label>
+
+          <div class="field-row">
+            <label class="form-field">
+              <span>模型</span>
+              <select id="model" name="model">
+                <option value="nano-banana-fast">nano-banana-fast（极速）</option>
+                <option value="nano-banana">nano-banana（标准）</option>
+                <option value="nano-banana-pro">nano-banana-pro（高质）</option>
+              </select>
+            </label>
+            <label class="form-field">
+              <span>画面比例</span>
+              <select id="aspectRatio" name="aspectRatio">
+                <option value="auto">auto</option>
+                <option value="1:1">1:1</option>
+                <option value="16:9">16:9</option>
+                <option value="9:16">9:16</option>
+                <option value="4:3">4:3</option>
+                <option value="3:4">3:4</option>
+                <option value="3:2">3:2</option>
+                <option value="2:3">2:3</option>
+                <option value="5:4">5:4</option>
+                <option value="4:5">4:5</option>
+                <option value="21:9">21:9</option>
+              </select>
+            </label>
+            <label class="form-field">
+              <span>分辨率（Pro 可用）</span>
+              <select id="imageSize" name="imageSize">
+                <option value="">默认 1K</option>
+                <option value="1K">1K</option>
+                <option value="2K">2K</option>
+                <option value="4K">4K</option>
+              </select>
+            </label>
+          </div>
+
+          <label class="form-field">
+            <span>参考图 URL（多行 / 逗号分隔，可选）</span>
+            <textarea id="urls" name="urls" rows="2" placeholder="https://example.com/reference-1.png"></textarea>
+          </label>
+
+          <div class="field-row">
+            <label class="form-field">
+              <span>Webhook（留空自动轮询 result）</span>
+              <input id="webHook" name="webHook" type="url" placeholder="https://your-webhook-url.com/callback">
+            </label>
+            <label class="form-checkbox">
+              <input type="checkbox" id="shutProgress" name="shutProgress">
+              <span>关闭进度回复（直接返回最终结果）</span>
+            </label>
+          </div>
+
+          <div class="actions">
+            <button class="primary" type="submit" id="submitBtn">立即生成</button>
+            <p class="hint">需要在环境变量中设置 <code>NANO_BANANA_API_KEY</code>。</p>
+          </div>
+        </form>
+      </section>
+
+      <div class="stacked">
+        <section class="panel" id="statusPanel">
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow">生成进度</p>
+              <h2>实时跟踪任务</h2>
+            </div>
+            <span class="status-pill" id="statusText">尚未开始</span>
+          </div>
+          <div class="progress">
+            <div id="progressBar" class="progress__bar" style="width: 0%"></div>
+          </div>
+          <pre class="log" id="log"></pre>
+        </section>
+
+        <section class="panel" id="resultPanel">
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow">生成结果</p>
+              <h2>查看图片与响应</h2>
+            </div>
+            <button class="secondary" id="copyJson" type="button">复制 JSON</button>
+          </div>
+          <div id="gallery" class="gallery empty">
+            <p class="placeholder">结果将展示在这里。</p>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <script>window.__API_HOST__ = "{{ api_host }}";</script>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
