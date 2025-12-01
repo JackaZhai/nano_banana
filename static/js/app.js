@@ -3,7 +3,6 @@ const promptInput = document.getElementById('prompt');
 const modelInput = document.getElementById('model');
 const aspectRatioInput = document.getElementById('aspectRatio');
 const imageSizeInput = document.getElementById('imageSize');
-const urlsInput = document.getElementById('urls');
 const webHookInput = document.getElementById('webHook');
 const shutProgressInput = document.getElementById('shutProgress');
 const submitBtn = document.getElementById('submitBtn');
@@ -13,10 +12,14 @@ const progressBar = document.getElementById('progressBar');
 const logPanel = document.getElementById('log');
 const gallery = document.getElementById('gallery');
 const copyJsonBtn = document.getElementById('copyJson');
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('fileInput');
+const fileList = document.getElementById('fileList');
 
 let currentId = '';
 let lastResponse = null;
 let pollTimer = null;
+let referenceFiles = [];
 
 const appendLog = (message) => {
   const now = new Date();
@@ -34,11 +37,6 @@ const setProgress = (value) => {
   const val = Math.min(100, Math.max(0, value || 0));
   progressBar.style.width = `${val}%`;
 };
-
-const parseUrls = (value) => value
-  .split(/\n|,/)
-  .map((u) => u.trim())
-  .filter(Boolean);
 
 const toggleLoading = (loading) => {
   submitBtn.disabled = loading;
@@ -111,6 +109,71 @@ const pollResult = (id) => {
   }, 2000);
 };
 
+const filesToDataUrls = async (files) => {
+  const converters = Array.from(files).map(
+    (file) =>
+      new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve({ name: file.name, dataUrl: reader.result });
+        reader.onerror = () => reject(reader.error || new Error('读取文件失败'));
+        reader.readAsDataURL(file);
+      }),
+  );
+  return Promise.all(converters);
+};
+
+const renderThumbs = () => {
+  fileList.innerHTML = '';
+  referenceFiles.forEach((item, index) => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'thumb';
+
+    const img = document.createElement('img');
+    img.src = item.dataUrl;
+    img.alt = item.name;
+
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.textContent = '×';
+    removeBtn.addEventListener('click', (event) => {
+      event.stopPropagation();
+      referenceFiles.splice(index, 1);
+      renderThumbs();
+    });
+
+    wrapper.appendChild(img);
+    wrapper.appendChild(removeBtn);
+    fileList.appendChild(wrapper);
+  });
+};
+
+const handleFiles = async (files) => {
+  if (!files || !files.length) return;
+  try {
+    const converted = await filesToDataUrls(files);
+    referenceFiles = referenceFiles.concat(converted);
+    renderThumbs();
+    appendLog(`添加了 ${converted.length} 张参考图。`);
+  } catch (error) {
+    appendLog(error.message || '参考图添加失败');
+  }
+};
+
+const setupDropzone = () => {
+  dropzone.addEventListener('click', () => fileInput.click());
+  dropzone.addEventListener('dragover', (event) => {
+    event.preventDefault();
+    dropzone.classList.add('dragging');
+  });
+  dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragging'));
+  dropzone.addEventListener('drop', (event) => {
+    event.preventDefault();
+    dropzone.classList.remove('dragging');
+    handleFiles(event.dataTransfer.files);
+  });
+  fileInput.addEventListener('change', (event) => handleFiles(event.target.files));
+};
+
 const submitForm = async (event) => {
   event.preventDefault();
   stopPolling();
@@ -126,7 +189,7 @@ const submitForm = async (event) => {
     model: modelInput.value,
     aspectRatio: aspectRatioInput.value,
     imageSize: imageSizeInput.value,
-    urls: parseUrls(urlsInput.value),
+    urls: referenceFiles.map((file) => file.dataUrl),
     webHook: webHookInput.value.trim() || '-1',
     shutProgress: shutProgressInput.checked,
   };
@@ -171,6 +234,8 @@ const resetForm = () => {
   gallery.classList.add('empty');
   gallery.innerHTML = '<p class="placeholder">结果将展示在这里。</p>';
   logPanel.textContent = '';
+  referenceFiles = [];
+  renderThumbs();
   stopPolling();
 };
 
@@ -191,5 +256,6 @@ const copyJson = async () => {
 form.addEventListener('submit', submitForm);
 resetBtn.addEventListener('click', resetForm);
 copyJsonBtn.addEventListener('click', copyJson);
+setupDropzone();
 
 appendLog('准备就绪，填写提示词即可开始生成。');
