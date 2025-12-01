@@ -9,6 +9,7 @@ app = Flask(__name__)
 
 API_HOST = os.getenv("NANO_BANANA_HOST", "https://grsai.dakka.com.cn")
 API_KEY = os.getenv("NANO_BANANA_API_KEY", "")
+HAS_API_KEY = bool(API_KEY)
 DRAW_ENDPOINT = f"{API_HOST.rstrip('/')}/v1/draw/nano-banana"
 RESULT_ENDPOINT = f"{API_HOST.rstrip('/')}/v1/draw/result"
 
@@ -62,7 +63,7 @@ def call_api(endpoint: str, payload: Dict[str, Any]) -> Dict[str, Any]:
 
 @app.get("/")
 def index() -> Any:
-    return render_template("index.html", api_host=API_HOST)
+    return render_template("index.html", api_host=API_HOST, has_api_key=HAS_API_KEY)
 
 
 @app.post("/api/draw")

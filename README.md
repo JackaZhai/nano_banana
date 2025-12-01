@@ -10,7 +10,7 @@
    pip install -r requirements.txt
    ```
 
-2. 配置环境变量：
+2. 配置环境变量（必填）：
 
    ```bash
    export NANO_BANANA_API_KEY=<你的 api key>
@@ -24,7 +24,14 @@
    python app.py
    ```
 
-打开浏览器访问 `http://localhost:5000`，填写提示词后即可提交任务。默认使用轮询方式（webHook 为空时自动填充为 "-1"），也可填写回调地址。
+打开浏览器访问 `http://localhost:5000`，填写提示词后即可提交任务。默认使用轮询方式（webHook 为空时自动填充为 "-1"），也可填写回调地址。后端会检查是否设置了 `NANO_BANANA_API_KEY` 并在页面顶部进行提示。
+
+若想直接在浏览器或 API 工具中验证代理接口，可调用：
+
+- `POST http://localhost:5000/api/draw`
+- `POST http://localhost:5000/api/result`
+
+所有请求都会转发到配置的官方节点，仍需确保本地环境变量携带有效的 `NANO_BANANA_API_KEY`。
 
 ## 配置说明
 - 默认调用 `/v1/draw/nano-banana`，`webHook` 未填写时会置为 `-1`，便于立即获取任务 `id` 并轮询 `/v1/draw/result`。
