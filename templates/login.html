@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>登录 - MatchAi 控制台</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="login-body">
+  <div class="login-wrapper">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="logo" aria-hidden="true">🤖</div>
+        <div>
+          <p class="eyebrow">MatchAi</p>
+          <h1>登录面板</h1>
+          <p class="muted">请输入账号和密码以继续使用。</p>
+        </div>
+      </div>
+      {% if error %}
+      <div class="notice notice--warning">{{ error }}</div>
+      {% endif %}
+      <form method="post" class="form login-form">
+        <label class="form-field">
+          <span>账号</span>
+          <input type="text" name="username" placeholder="输入账号" required>
+        </label>
+        <label class="form-field">
+          <span>密码</span>
+          <input type="password" name="password" placeholder="输入密码" required>
+        </label>
+        <button class="primary full" type="submit">登录</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
