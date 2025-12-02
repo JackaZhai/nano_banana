@@ -31,12 +31,30 @@
       <header class="header">
         <div>
           <p class="eyebrow">MatchAi</p>
-          <h1>图像生成工作台</h1>
-          <p class="muted">提交提示词、跟踪进度并快速获取结果。</p>
+          <h1>控制台工作台</h1>
+          <p class="muted">通过右侧选项选择需要的功能，界面更清爽。</p>
         </div>
-        <div class="endpoint">
-          <p class="mini-label">接口地址</p>
-          <code>{{ api_host }}/v1/draw/nano-banana</code>
+        <div class="header__aside">
+          <div class="switcher" role="tablist" aria-label="功能选择">
+            <p class="mini-label">选择功能</p>
+            <div class="switcher__pills">
+              <button class="pill active" data-feature="draw" aria-selected="true">图像生成</button>
+              <button class="pill" data-feature="keys" aria-selected="false">Api key 管理</button>
+              <button class="pill" data-feature="chat" aria-selected="false">大模型对话</button>
+            </div>
+          </div>
+          <div class="endpoint" data-feature-display="draw">
+            <p class="mini-label">接口地址</p>
+            <code>{{ api_host }}/v1/draw/nano-banana</code>
+          </div>
+          <div class="endpoint" data-feature-display="keys" hidden>
+            <p class="mini-label">作用范围</p>
+            <code>为图像生成与对话接口配置密钥</code>
+          </div>
+          <div class="endpoint" data-feature-display="chat" hidden>
+            <p class="mini-label">接口地址</p>
+            <code>{{ api_host }}/v1/chat/completions</code>
+          </div>
         </div>
       </header>
 
@@ -46,8 +64,9 @@
       </div>
       {% endif %}
 
-      <main class="grid">
-        <section class="panel">
+      <div class="feature-section active" id="feature-draw">
+        <main class="grid">
+          <section class="panel">
           <div class="panel__header">
             <div>
               <p class="eyebrow">生成参数</p>
@@ -126,46 +145,43 @@
           </form>
         </section>
 
-        <div class="stacked">
-          <section class="panel" id="statusPanel">
-            <div class="panel__header">
-              <div>
-                <p class="eyebrow">生成进度</p>
-                <h2>实时跟踪</h2>
+          <div class="stacked">
+            <section class="panel" id="statusPanel">
+              <div class="panel__header">
+                <div>
+                  <p class="eyebrow">生成进度</p>
+                  <h2>实时跟踪</h2>
+                </div>
+                <span class="status-pill" id="statusText">尚未开始</span>
               </div>
-              <span class="status-pill" id="statusText">尚未开始</span>
-            </div>
-            <div class="progress">
-              <div id="progressBar" class="progress__bar" style="width: 0%"></div>
-            </div>
-            <pre class="log" id="log"></pre>
-          </section>
-
-          <section class="panel" id="resultPanel">
-            <div class="panel__header">
-              <div>
-                <p class="eyebrow">生成结果</p>
-                <h2>图片与响应</h2>
+              <div class="progress">
+                <div id="progressBar" class="progress__bar" style="width: 0%"></div>
               </div>
-              <button class="ghost" id="copyImage" type="button">复制图片</button>
-            </div>
-            <div id="gallery" class="gallery empty">
-              <p class="placeholder">结果将展示在这里。</p>
-            </div>
-          </section>
-        </div>
-      </main>
+              <pre class="log" id="log"></pre>
+            </section>
 
-      <section class="panel" id="apiKeyPanel">
+            <section class="panel" id="resultPanel">
+              <div class="panel__header">
+                <div>
+                  <p class="eyebrow">生成结果</p>
+                  <h2>图片与响应</h2>
+                </div>
+                <button class="ghost" id="copyImage" type="button">复制图片</button>
+              </div>
+              <div id="gallery" class="gallery empty">
+                <p class="placeholder">结果将展示在这里。</p>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+
+      <section class="panel feature-section" id="feature-keys" hidden>
         <div class="panel__header">
           <div>
             <p class="eyebrow">安全</p>
             <h2>Api key 管理</h2>
             <p class="muted">添加、删除或切换当前使用的 Api key，供图像生成与大模型对话共用。</p>
-          </div>
-          <div class="endpoint">
-            <p class="mini-label">作用范围</p>
-            <code>生成接口 / 对话接口</code>
           </div>
         </div>
 
@@ -185,16 +201,12 @@
         </div>
       </section>
 
-      <section class="panel chat" id="chatPanel">
+      <section class="panel chat feature-section" id="feature-chat" hidden>
         <div class="panel__header">
           <div>
             <p class="eyebrow">大模型</p>
             <h2>对话调试台</h2>
             <p class="muted">接口与 OpenAI Chat Completions 兼容，直接提交消息即可。</p>
-          </div>
-          <div class="endpoint">
-            <p class="mini-label">接口地址</p>
-            <code>{{ api_host }}/v1/chat/completions</code>
           </div>
         </div>
 
