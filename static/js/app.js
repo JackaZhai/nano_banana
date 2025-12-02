@@ -28,6 +28,9 @@ const apiKeyInput = document.getElementById('apiKeyInput');
 const apiKeyList = document.getElementById('apiKeyList');
 const activeKeyMask = document.getElementById('activeKeyMask');
 const apiKeyNotice = document.getElementById('apiKeyNotice');
+const featureButtons = document.querySelectorAll('[data-feature]');
+const featureSections = document.querySelectorAll('.feature-section');
+const featureEndpoints = document.querySelectorAll('[data-feature-display]');
 
 let currentId = '';
 let lastResponse = null;
@@ -54,6 +57,25 @@ const setStatus = (text, type = '') => {
 const setProgress = (value) => {
   const val = Math.min(100, Math.max(0, value || 0));
   progressBar.style.width = `${val}%`;
+};
+
+const setFeature = (feature) => {
+  featureButtons.forEach((btn) => {
+    const isActive = btn.dataset.feature === feature;
+    btn.classList.toggle('active', isActive);
+    btn.setAttribute('aria-selected', isActive);
+  });
+
+  featureSections.forEach((section) => {
+    const match = section.id === `feature-${feature}`;
+    section.hidden = !match;
+    section.classList.toggle('active', match);
+  });
+
+  featureEndpoints.forEach((endpoint) => {
+    const match = endpoint.dataset.featureDisplay === feature;
+    endpoint.hidden = !match;
+  });
 };
 
 const toggleLoading = (loading) => {
@@ -580,6 +602,12 @@ form.addEventListener('submit', submitForm);
 resetBtn.addEventListener('click', resetForm);
 copyImageBtn.addEventListener('click', copyImage);
 setupDropzone();
+
+featureButtons.forEach((btn) => {
+  btn.addEventListener('click', () => setFeature(btn.dataset.feature));
+});
+
+setFeature('draw');
 
 appendLog('准备就绪，填写提示词即可开始生成。');
 
