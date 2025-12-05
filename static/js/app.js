@@ -34,6 +34,8 @@ const usageLast = document.getElementById('usageLast');
 const featureButtons = document.querySelectorAll('[data-feature]');
 const featureSections = document.querySelectorAll('.feature-section');
 const featureEndpoints = document.querySelectorAll('[data-feature-display]');
+const featureShortcuts = document.querySelectorAll('[data-feature-target]');
+const workbench = document.querySelector('.workbench');
 
 let currentId = '';
 let lastResponse = null;
@@ -79,6 +81,10 @@ const setFeature = (feature) => {
     const match = endpoint.dataset.featureDisplay === feature;
     endpoint.hidden = !match;
   });
+
+  if (workbench) {
+    workbench.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 };
 
 const toggleLoading = (loading) => {
@@ -638,6 +644,10 @@ setupDropzone();
 
 featureButtons.forEach((btn) => {
   btn.addEventListener('click', () => setFeature(btn.dataset.feature));
+});
+
+featureShortcuts.forEach((card) => {
+  card.addEventListener('click', () => setFeature(card.dataset.featureTarget));
 });
 
 setFeature('draw');
