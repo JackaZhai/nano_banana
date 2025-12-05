@@ -36,6 +36,9 @@ body {
   align-content: start;
   gap: 22px;
   border-right: 1px solid rgba(255, 255, 255, 0.06);
+  position: sticky;
+  top: 0;
+  height: 100vh;
 }
 
 .sidebar__brand {
@@ -56,6 +59,11 @@ body {
   border-radius: 12px;
   display: block;
   border: 1px solid transparent;
+  background: transparent;
+  text-align: left;
+  width: 100%;
+  font: inherit;
+  cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
@@ -68,6 +76,14 @@ body {
   background: rgba(245, 193, 79, 0.12);
   border-color: rgba(245, 193, 79, 0.4);
   color: #fff;
+}
+
+.nav__label {
+  color: #9da3b2;
+  margin: 4px 0 0;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .page {
@@ -83,42 +99,6 @@ body {
   gap: 18px;
   align-items: center;
   margin-bottom: 20px;
-}
-
-.header__aside {
-  display: grid;
-  justify-items: end;
-  gap: 10px;
-}
-
-.switcher {
-  display: grid;
-  gap: 6px;
-  text-align: right;
-}
-
-.switcher__pills {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-}
-
-.pill {
-  border: 1px solid var(--border);
-  background: #fff;
-  border-radius: 999px;
-  padding: 8px 14px;
-  font-weight: 600;
-  color: var(--muted);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.pill.active {
-  background: #fff7e0;
-  border-color: rgba(245, 193, 79, 0.55);
-  color: #a86a00;
-  box-shadow: 0 6px 18px rgba(245, 193, 79, 0.28);
 }
 
 .brand {
@@ -143,7 +123,32 @@ body {
 }
 
 .endpoint {
-  text-align: right;
+  text-align: left;
+}
+
+.sidebar__meta {
+  margin-top: 6px;
+  display: grid;
+  gap: 10px;
+}
+
+.stat {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.stat__value {
+  margin: 6px 0 2px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.stat__hint {
+  margin: 0;
+  color: #c8ccd8;
+  font-size: 13px;
 }
 
 .endpoint code {

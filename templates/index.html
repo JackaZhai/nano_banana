@@ -19,42 +19,43 @@
           <h1>控制台</h1>
         </div>
       </div>
-      <nav class="nav">
-        <a class="nav__item active" href="#">仪表盘</a>
-        <a class="nav__item" href="#">大模型</a>
-        <a class="nav__item" href="#">图像生成</a>
-        <a class="nav__item" href="#">日志</a>
-        <a class="nav__item" href="#">Api key 管理</a>
+      <nav class="nav" role="tablist" aria-label="功能切换">
+        <p class="nav__label">功能</p>
+        <button class="nav__item active" data-feature="draw" aria-selected="true" role="tab" type="button">图像生成</button>
+        <button class="nav__item" data-feature="keys" aria-selected="false" role="tab" type="button">Api key 管理</button>
+        <button class="nav__item" data-feature="chat" aria-selected="false" role="tab" type="button">大模型对话</button>
       </nav>
+
+      <div class="sidebar__meta">
+        <div class="stat">
+          <p class="mini-label">当前 Api key</p>
+          <p class="stat__value" id="sidebarKey">未设置</p>
+        </div>
+        <div class="stat">
+          <p class="mini-label">调用总次数</p>
+          <p class="stat__value"><span id="usageTotal">0</span> 次</p>
+          <p class="stat__hint" id="usageLast">最近使用：暂无</p>
+        </div>
+        <div class="endpoint" data-feature-display="draw">
+          <p class="mini-label">接口地址</p>
+          <code>{{ api_host }}/v1/draw/nano-banana</code>
+        </div>
+        <div class="endpoint" data-feature-display="keys" hidden>
+          <p class="mini-label">作用范围</p>
+          <code>为图像生成与对话接口配置密钥</code>
+        </div>
+        <div class="endpoint" data-feature-display="chat" hidden>
+          <p class="mini-label">接口地址</p>
+          <code>{{ api_host }}/v1/chat/completions</code>
+        </div>
+      </div>
     </aside>
     <div class="page">
       <header class="header">
         <div>
           <p class="eyebrow">MatchAi</p>
           <h1>控制台工作台</h1>
-          <p class="muted">通过右侧选项选择需要的功能，界面更清爽。</p>
-        </div>
-        <div class="header__aside">
-          <div class="switcher" role="tablist" aria-label="功能选择">
-            <p class="mini-label">选择功能</p>
-            <div class="switcher__pills">
-              <button class="pill active" data-feature="draw" aria-selected="true">图像生成</button>
-              <button class="pill" data-feature="keys" aria-selected="false">Api key 管理</button>
-              <button class="pill" data-feature="chat" aria-selected="false">大模型对话</button>
-            </div>
-          </div>
-          <div class="endpoint" data-feature-display="draw">
-            <p class="mini-label">接口地址</p>
-            <code>{{ api_host }}/v1/draw/nano-banana</code>
-          </div>
-          <div class="endpoint" data-feature-display="keys" hidden>
-            <p class="mini-label">作用范围</p>
-            <code>为图像生成与对话接口配置密钥</code>
-          </div>
-          <div class="endpoint" data-feature-display="chat" hidden>
-            <p class="mini-label">接口地址</p>
-            <code>{{ api_host }}/v1/chat/completions</code>
-          </div>
+          <p class="muted">通过左侧固定导航切换功能，界面更清爽。</p>
         </div>
       </header>
 
