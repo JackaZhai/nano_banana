@@ -3,39 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MatchAi 控制台</title>
+  <title>MatchAi 控制台</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
-<body>
-  <div class="layout">
-    <aside class="sidebar">
-      <div class="sidebar__brand">
-        <div class="logo" aria-hidden="true">🤖</div>
+<body class="workspace-body">
+  <div class="app-shell">
+    <aside class="rail" aria-label="全局导航">
+      <div class="rail__brand">
+        <div class="avatar">🤖</div>
         <div>
           <p class="eyebrow">MatchAi</p>
           <h1>控制台</h1>
         </div>
       </div>
-      <nav class="nav" role="tablist" aria-label="功能切换">
-        <p class="nav__label">功能</p>
-        <button class="nav__item active" data-feature="draw" aria-selected="true" role="tab" type="button">图像生成</button>
-        <button class="nav__item" data-feature="keys" aria-selected="false" role="tab" type="button">Api key 管理</button>
-        <button class="nav__item" data-feature="chat" aria-selected="false" role="tab" type="button">大模型对话</button>
+
+      <nav class="rail__nav" role="tablist" aria-label="功能切换">
+        <button class="rail__icon active" data-feature="draw" aria-selected="true" role="tab" type="button" title="图像生成">🎨</button>
+        <button class="rail__icon" data-feature="keys" aria-selected="false" role="tab" type="button" title="Api key 管理">🔑</button>
+        <button class="rail__icon" data-feature="chat" aria-selected="false" role="tab" type="button" title="大模型对话">💬</button>
       </nav>
 
-      <div class="sidebar__meta">
-        <div class="stat">
-          <p class="mini-label">当前 Api key</p>
-          <p class="stat__value" id="sidebarKey">未设置</p>
-        </div>
-        <div class="stat">
-          <p class="mini-label">调用总次数</p>
-          <p class="stat__value"><span id="usageTotal">0</span> 次</p>
-          <p class="stat__hint" id="usageLast">最近使用：暂无</p>
-        </div>
+      <div class="rail__meta">
+        <div class="pill">当前 Key：<span id="sidebarKey">未设置</span></div>
+        <div class="pill">调用总次数：<span id="usageTotal">0</span></div>
+        <div class="pill" id="usageLast">最近使用：暂无</div>
+      </div>
+
+      <div class="rail__footer">
         <div class="endpoint" data-feature-display="draw">
           <p class="mini-label">接口地址</p>
           <code>{{ api_host }}/v1/draw/nano-banana</code>
@@ -48,14 +45,36 @@
           <p class="mini-label">接口地址</p>
           <code>{{ api_host }}/v1/chat/completions</code>
         </div>
+        <div class="profile">
+          <div class="avatar avatar--small">🧑‍💻</div>
+          <div>
+            <p class="profile__name">工作台成员</p>
+            <p class="profile__role">已登录</p>
+          </div>
+          <button class="ghost ghost--pill" type="button">···</button>
+        </div>
       </div>
     </aside>
-    <div class="page">
-      <header class="header">
+
+    <div class="workspace">
+      <header class="workspace__header">
         <div>
           <p class="eyebrow">MatchAi</p>
-          <h1>控制台工作台</h1>
-          <p class="muted">通过左侧固定导航切换功能，界面更清爽。</p>
+          <div class="title-row">
+            <h1>项目</h1>
+            <div class="pill pill--soft">新建任务</div>
+          </div>
+          <p class="muted">使用统一的项目视角浏览、创建和调试你的 AI 能力。</p>
+        </div>
+        <div class="workspace__actions">
+          <label class="search" aria-label="搜索或创建">
+            <span class="search__icon">🔍</span>
+            <input type="search" placeholder="搜索或创建" aria-label="搜索或创建">
+          </label>
+          <div class="view-toggle" aria-label="视图切换">
+            <button class="ghost ghost--pill">🗂️</button>
+            <button class="ghost ghost--pill ghost--active">🔲</button>
+          </div>
         </div>
       </header>
 
@@ -65,193 +84,282 @@
       </div>
       {% endif %}
 
-      <div class="feature-section active" id="feature-draw">
-        <main class="grid">
-          <section class="panel">
-          <div class="panel__header">
-            <div>
-              <p class="eyebrow">生成参数</p>
-              <h2>填写提示词并提交</h2>
-            </div>
-            <button class="ghost" id="resetBtn" type="button">重置</button>
-          </div>
-
-          <form id="drawForm" class="form">
-            <label class="form-field">
-              <span>提示词 <strong>*</strong></span>
-              <textarea id="prompt" name="prompt" rows="3" placeholder="一只科幻机械猫站在霓虹城市中央，蓝紫色光影，超写实"></textarea>
-            </label>
-
-            <div class="field-row">
-              <label class="form-field">
-                <span>模型</span>
-                <select id="model" name="model">
-                  <option value="nano-banana-fast">nano-banana-fast（极速）</option>
-                  <option value="nano-banana">nano-banana（标准）</option>
-                  <option value="nano-banana-pro">nano-banana-pro（高质）</option>
-                </select>
-              </label>
-              <label class="form-field">
-                <span>画面比例</span>
-                <select id="aspectRatio" name="aspectRatio">
-                  <option value="auto">auto</option>
-                  <option value="1:1">1:1</option>
-                  <option value="16:9">16:9</option>
-                  <option value="9:16">9:16</option>
-                  <option value="4:3">4:3</option>
-                  <option value="3:4">3:4</option>
-                  <option value="3:2">3:2</option>
-                  <option value="2:3">2:3</option>
-                  <option value="5:4">5:4</option>
-                  <option value="4:5">4:5</option>
-                  <option value="21:9">21:9</option>
-                </select>
-              </label>
-              <label class="form-field">
-                <span>分辨率（Pro 可用）</span>
-                <select id="imageSize" name="imageSize">
-                  <option value="">默认 1K</option>
-                  <option value="1K">1K</option>
-                  <option value="2K">2K</option>
-                  <option value="4K">4K</option>
-                </select>
-              </label>
-            </div>
-
-            <div class="dropzone" id="dropzone">
-              <input id="fileInput" type="file" accept="image/*" multiple aria-label="上传参考图">
-              <div class="dropzone__text">
-                <p class="eyebrow">参考图</p>
-                <h3>拖拽或点击上传图片</h3>
-                <p class="muted">支持多张图片，上传后将随请求一并发送。</p>
-              </div>
-              <div id="fileList" class="thumbs"></div>
-            </div>
-
-            <div class="field-row">
-              <label class="form-field">
-                <span>Webhook（留空自动轮询 result）</span>
-                <input id="webHook" name="webHook" type="url" placeholder="https://your-webhook-url.com/callback">
-              </label>
-              <label class="form-checkbox">
-                <input type="checkbox" id="shutProgress" name="shutProgress">
-                <span>关闭进度回复（直接返回最终结果）</span>
-              </label>
-            </div>
-
-            <div class="actions">
-              <button class="primary" type="submit" id="submitBtn">立即生成</button>
-              <p class="hint">确保环境变量 <code>NANO_BANANA_API_KEY</code> 已设置。</p>
-            </div>
-          </form>
-        </section>
-
-          <div class="stacked">
-            <section class="panel" id="statusPanel">
-              <div class="panel__header">
-                <div>
-                  <p class="eyebrow">生成进度</p>
-                  <h2>实时跟踪</h2>
-                </div>
-                <span class="status-pill" id="statusText">尚未开始</span>
-              </div>
-              <div class="progress">
-                <div id="progressBar" class="progress__bar" style="width: 0%"></div>
-              </div>
-              <pre class="log" id="log"></pre>
-            </section>
-
-            <section class="panel" id="resultPanel">
-              <div class="panel__header">
-                <div>
-                  <p class="eyebrow">生成结果</p>
-                  <h2>图片与响应</h2>
-                </div>
-                <button class="ghost" id="copyImage" type="button">复制图片</button>
-              </div>
-              <div id="gallery" class="gallery empty">
-                <p class="placeholder">结果将展示在这里。</p>
-              </div>
-            </section>
-          </div>
-        </main>
+      <div class="filters" role="tablist" aria-label="视图筛选">
+        <button class="pill pill--filter active" type="button">所有</button>
+        <button class="pill pill--filter" type="button">我的</button>
+        <button class="pill pill--filter" type="button">公共</button>
+        <button class="pill pill--filter" type="button">其他</button>
       </div>
 
-      <section class="panel feature-section" id="feature-keys" hidden>
-        <div class="panel__header">
-          <div>
-            <p class="eyebrow">安全</p>
-            <h2>Api key 管理</h2>
-            <p class="muted">添加、删除或切换当前使用的 Api key，供图像生成与大模型对话共用。</p>
+      <section class="section">
+        <div class="section__header">
+          <h2>我的</h2>
+          <div class="section__meta">
+            <span class="tag">高性能</span>
+            <span class="tag">可靠</span>
           </div>
         </div>
-
-        <form id="apiKeyForm" class="key-form">
-          <label class="form-field">
-            <span>新增 Api key</span>
-            <input id="apiKeyInput" name="apiKey" type="text" placeholder="请输入以 sk- 开头的密钥" autocomplete="off">
-          </label>
-          <div class="actions">
-            <button class="primary" type="submit">添加并使用</button>
-            <p class="hint">当前使用：<code id="activeKeyMask">暂无</code></p>
-          </div>
-        </form>
-
-        <div class="key-list" id="apiKeyList">
-          <p class="placeholder">尚未添加 Api key，添加后可在此切换或删除。</p>
+        <div class="project-grid">
+          <article class="project-card" data-feature-target="draw">
+            <div class="project-card__badge">操作</div>
+            <h3>图像生成</h3>
+            <p class="muted">端到端提交提示词，实时查看进度与结果。</p>
+            <div class="project-card__footer">
+              <span>支持多模型选择</span>
+              <button class="ghost ghost--pill" type="button">立即使用</button>
+            </div>
+          </article>
+          <article class="project-card" data-feature-target="keys">
+            <div class="project-card__badge">私有</div>
+            <h3>Api key 管理</h3>
+            <p class="muted">集中管理你的密钥，快速切换当前使用的 key。</p>
+            <div class="project-card__footer">
+              <span>同步侧栏状态</span>
+              <button class="ghost ghost--pill" type="button">立即使用</button>
+            </div>
+          </article>
+          <article class="project-card" data-feature-target="chat">
+            <div class="project-card__badge">专属</div>
+            <h3>大模型对话</h3>
+            <p class="muted">兼容 OpenAI 格式，支持流式或一次性完整回复。</p>
+            <div class="project-card__footer">
+              <span>快速调试推理</span>
+              <button class="ghost ghost--pill" type="button">立即使用</button>
+            </div>
+          </article>
         </div>
       </section>
 
-      <section class="panel chat feature-section" id="feature-chat" hidden>
-        <div class="panel__header">
+      <section class="section">
+        <div class="section__header">
+          <h2>公共</h2>
+          <div class="section__meta">
+            <span class="tag">社区精选</span>
+          </div>
+        </div>
+        <div class="project-grid project-grid--public">
+          <article class="project-card project-card--media">
+            <div class="thumb thumb--wide"></div>
+            <div class="project-card__body">
+              <h3>视觉生成组件</h3>
+              <p class="muted">利用 nano-banana 模型，灵活调整画幅比例与分辨率。</p>
+            </div>
+          </article>
+          <article class="project-card project-card--media">
+            <div class="thumb thumb--wide thumb--alt"></div>
+            <div class="project-card__body">
+              <h3>对话调试台</h3>
+              <p class="muted">不同模型一键切换，实时比对效果。</p>
+            </div>
+          </article>
+          <article class="project-card project-card--media">
+            <div class="thumb thumb--wide thumb--mono"></div>
+            <div class="project-card__body">
+              <h3>密钥管控</h3>
+              <p class="muted">多来源密钥统一管理，安全可控。</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="workbench">
+        <div class="workbench__header">
           <div>
-            <p class="eyebrow">大模型</p>
-            <h2>对话调试台</h2>
-            <p class="muted">接口与 OpenAI Chat Completions 兼容，直接提交消息即可。</p>
+            <p class="eyebrow">工作台</p>
+            <h2>实时操作</h2>
+            <p class="muted">点击上方卡片或侧栏图标切换不同功能。</p>
           </div>
+          <div class="pill pill--soft">三种能力</div>
         </div>
 
-        <form id="chatForm" class="chat__form">
-          <div class="chat__controls">
-            <label class="form-field">
-              <span>模型</span>
-              <select id="chatModel" name="chatModel">
-                <option value="nano-banana-fast">nano-banana-fast</option>
-                <option value="nano-banana">nano-banana</option>
-                <option value="gemini-2.5-pro">gemini-2.5-pro</option>
-                <option value="gemini-2.5-flash">gemini-2.5-flash</option>
-                <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite</option>
-                <option value="gpt-4o-all">gpt-4o-all</option>
-                <option value="o4-mini-all">o4-mini-all</option>
-                <option value="gpt-4o-mini" selected>gpt-4o-mini</option>
-              </select>
-            </label>
+        <div class="feature-section active" id="feature-draw">
+          <main class="grid">
+            <section class="panel">
+              <div class="panel__header">
+                <div>
+                  <p class="eyebrow">生成参数</p>
+                  <h3>填写提示词并提交</h3>
+                </div>
+                <button class="ghost" id="resetBtn" type="button">重置</button>
+              </div>
 
-            <label class="form-field">
-              <span>System Prompt</span>
-              <input id="systemPrompt" name="systemPrompt" type="text" placeholder="You are a helpful assistant.">
-            </label>
+              <form id="drawForm" class="form">
+                <label class="form-field">
+                  <span>提示词 <strong>*</strong></span>
+                  <textarea id="prompt" name="prompt" rows="3" placeholder="一只科幻机械猫站在霓虹城市中央，蓝紫色光影，超写实"></textarea>
+                </label>
 
-            <label class="form-checkbox">
-              <input type="checkbox" id="chatStream" name="chatStream">
-              <span>启用流式</span>
-            </label>
-          </div>
+                <div class="field-row">
+                  <label class="form-field">
+                    <span>模型</span>
+                    <select id="model" name="model">
+                      <option value="nano-banana-fast">nano-banana-fast（极速）</option>
+                      <option value="nano-banana">nano-banana（标准）</option>
+                      <option value="nano-banana-pro">nano-banana-pro（高质）</option>
+                    </select>
+                  </label>
+                  <label class="form-field">
+                    <span>画面比例</span>
+                    <select id="aspectRatio" name="aspectRatio">
+                      <option value="auto">auto</option>
+                      <option value="1:1">1:1</option>
+                      <option value="16:9">16:9</option>
+                      <option value="9:16">9:16</option>
+                      <option value="4:3">4:3</option>
+                      <option value="3:4">3:4</option>
+                      <option value="3:2">3:2</option>
+                      <option value="2:3">2:3</option>
+                      <option value="5:4">5:4</option>
+                      <option value="4:5">4:5</option>
+                      <option value="21:9">21:9</option>
+                    </select>
+                  </label>
+                  <label class="form-field">
+                    <span>分辨率（Pro 可用）</span>
+                    <select id="imageSize" name="imageSize">
+                      <option value="">默认 1K</option>
+                      <option value="1K">1K</option>
+                      <option value="2K">2K</option>
+                      <option value="4K">4K</option>
+                    </select>
+                  </label>
+                </div>
 
-          <label class="form-field chat__input">
-            <span>提问</span>
-            <textarea id="chatMessage" name="chatMessage" rows="3" placeholder="请输入要咨询的大模型问题"></textarea>
-          </label>
+                <div class="dropzone" id="dropzone">
+                  <input id="fileInput" type="file" accept="image/*" multiple aria-label="上传参考图">
+                  <div class="dropzone__text">
+                    <p class="eyebrow">参考图</p>
+                    <h3>拖拽或点击上传图片</h3>
+                    <p class="muted">支持多张图片，上传后将随请求一并发送。</p>
+                  </div>
+                  <div id="fileList" class="thumbs"></div>
+                </div>
 
-          <div class="chat__actions">
-            <button type="submit" class="primary" id="chatSend">发送</button>
-            <button type="button" class="ghost" id="chatClear">清空记录</button>
-          </div>
-        </form>
+                <div class="field-row">
+                  <label class="form-field">
+                    <span>Webhook（留空自动轮询 result）</span>
+                    <input id="webHook" name="webHook" type="url" placeholder="https://your-webhook-url.com/callback">
+                  </label>
+                  <label class="form-checkbox">
+                    <input type="checkbox" id="shutProgress" name="shutProgress">
+                    <span>关闭进度回复（直接返回最终结果）</span>
+                  </label>
+                </div>
 
-        <div class="chat__log" id="chatLog">
-          <div class="chat__empty">尚无对话，输入内容开始与模型交流。</div>
+                <div class="actions">
+                  <button class="primary" type="submit" id="submitBtn">立即生成</button>
+                  <p class="hint">确保环境变量 <code>NANO_BANANA_API_KEY</code> 已设置。</p>
+                </div>
+              </form>
+            </section>
+
+            <div class="stacked">
+              <section class="panel" id="statusPanel">
+                <div class="panel__header">
+                  <div>
+                    <p class="eyebrow">生成进度</p>
+                    <h3>实时跟踪</h3>
+                  </div>
+                  <span class="status-pill" id="statusText">尚未开始</span>
+                </div>
+                <div class="progress">
+                  <div id="progressBar" class="progress__bar" style="width: 0%"></div>
+                </div>
+                <pre class="log" id="log"></pre>
+              </section>
+
+              <section class="panel" id="resultPanel">
+                <div class="panel__header">
+                  <div>
+                    <p class="eyebrow">生成结果</p>
+                    <h3>图片与响应</h3>
+                  </div>
+                  <button class="ghost" id="copyImage" type="button">复制图片</button>
+                </div>
+                <div id="gallery" class="gallery empty">
+                  <p class="placeholder">结果将展示在这里。</p>
+                </div>
+              </section>
+            </div>
+          </main>
         </div>
+
+        <section class="panel feature-section" id="feature-keys" hidden>
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow">安全</p>
+              <h3>Api key 管理</h3>
+              <p class="muted">添加、删除或切换当前使用的 Api key，供图像生成与大模型对话共用。</p>
+            </div>
+          </div>
+
+          <form id="apiKeyForm" class="key-form">
+            <label class="form-field">
+              <span>新增 Api key</span>
+              <input id="apiKeyInput" name="apiKey" type="text" placeholder="请输入以 sk- 开头的密钥" autocomplete="off">
+            </label>
+            <div class="actions">
+              <button class="primary" type="submit">添加并使用</button>
+              <p class="hint">当前使用：<code id="activeKeyMask">暂无</code></p>
+            </div>
+          </form>
+
+          <div class="key-list" id="apiKeyList">
+            <p class="placeholder">尚未添加 Api key，添加后可在此切换或删除。</p>
+          </div>
+        </section>
+
+        <section class="panel chat feature-section" id="feature-chat" hidden>
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow">大模型</p>
+              <h3>对话调试台</h3>
+              <p class="muted">接口与 OpenAI Chat Completions 兼容，直接提交消息即可。</p>
+            </div>
+          </div>
+
+          <form id="chatForm" class="chat__form">
+            <div class="chat__controls">
+              <label class="form-field">
+                <span>模型</span>
+                <select id="chatModel" name="chatModel">
+                  <option value="nano-banana-fast">nano-banana-fast</option>
+                  <option value="nano-banana">nano-banana</option>
+                  <option value="gemini-2.5-pro">gemini-2.5-pro</option>
+                  <option value="gemini-2.5-flash">gemini-2.5-flash</option>
+                  <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite</option>
+                  <option value="gpt-4o-all">gpt-4o-all</option>
+                  <option value="o4-mini-all">o4-mini-all</option>
+                  <option value="gpt-4o-mini" selected>gpt-4o-mini</option>
+                </select>
+              </label>
+
+              <label class="form-field">
+                <span>System Prompt</span>
+                <input id="systemPrompt" name="systemPrompt" type="text" placeholder="You are a helpful assistant.">
+              </label>
+
+              <label class="form-checkbox">
+                <input type="checkbox" id="chatStream" name="chatStream">
+                <span>启用流式</span>
+              </label>
+            </div>
+
+            <label class="form-field chat__input">
+              <span>提问</span>
+              <textarea id="chatMessage" name="chatMessage" rows="3" placeholder="请输入要咨询的大模型问题"></textarea>
+            </label>
+
+            <div class="chat__actions">
+              <button type="submit" class="primary" id="chatSend">发送</button>
+              <button type="button" class="ghost" id="chatClear">清空记录</button>
+            </div>
+          </form>
+
+          <div class="chat__log" id="chatLog">
+            <div class="chat__empty">尚无对话，输入内容开始与模型交流。</div>
+          </div>
+        </section>
       </section>
     </div>
   </div>
