@@ -28,6 +28,9 @@ const apiKeyInput = document.getElementById('apiKeyInput');
 const apiKeyList = document.getElementById('apiKeyList');
 const activeKeyMask = document.getElementById('activeKeyMask');
 const apiKeyNotice = document.getElementById('apiKeyNotice');
+const sidebarKey = document.getElementById('sidebarKey');
+const usageTotal = document.getElementById('usageTotal');
+const usageLast = document.getElementById('usageLast');
 const featureButtons = document.querySelectorAll('[data-feature]');
 const featureSections = document.querySelectorAll('.feature-section');
 const featureEndpoints = document.querySelectorAll('[data-feature-display]');
@@ -279,6 +282,7 @@ const submitForm = async (event) => {
       setProgress(data.progress || 100);
       setStatus(data.status || '已返回', data.status === 'succeeded' ? 'success' : '');
     }
+    fetchProfile();
   } catch (error) {
     appendLog(error.message);
     setStatus('提交失败', 'error');
@@ -372,6 +376,10 @@ const updateApiKeyState = (data) => {
   activeKeyId = data.activeId || '';
   renderApiKeyList();
   syncApiKeyNotice(Boolean(data.hasKey));
+  if (sidebarKey) {
+    const active = data.keys.find((item) => item.isActive);
+    sidebarKey.textContent = active?.mask || '未设置';
+  }
 };
 
 const fetchApiKeys = async () => {
@@ -430,6 +438,30 @@ const removeApiKey = async (id) => {
     appendLog('已删除 Api key');
   } catch (error) {
     appendLog(error.message || '删除 Api key 失败');
+  }
+};
+
+const updateUsage = (data) => {
+  if (!data || !data.usage) return;
+  if (usageTotal) usageTotal.textContent = data.usage.totalCalls ?? 0;
+  if (usageLast) {
+    usageLast.textContent = data.usage.lastUsedAt
+      ? `最近使用：${new Date(data.usage.lastUsedAt).toLocaleString()}`
+      : '最近使用：暂无';
+  }
+  if (sidebarKey && data.activeKeyMask !== undefined) {
+    sidebarKey.textContent = data.activeKeyMask || '未设置';
+  }
+};
+
+const fetchProfile = async () => {
+  try {
+    const res = await fetch('/api/profile');
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || '获取个人信息失败');
+    updateUsage(data);
+  } catch (error) {
+    appendLog(error.message || '获取个人信息失败');
   }
 };
 
@@ -554,6 +586,7 @@ const sendChat = async (event) => {
       const reply = (choice.message && choice.message.content) || (choice.delta && choice.delta.content) || data.content || '';
       updateAssistantDraft(draftIndex, reply || '');
     }
+    fetchProfile();
   } catch (error) {
     updateAssistantDraft(draftIndex, `请求失败：${error.message || error}`);
   } finally {
@@ -624,3 +657,5 @@ if (apiKeyForm) {
   fetchApiKeys();
   apiKeyForm.addEventListener('submit', submitApiKey);
 }
+
+fetchProfile();
