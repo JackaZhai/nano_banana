@@ -199,19 +199,22 @@ def load_keys_decrypted(user_id: int) -> Tuple[List[Dict[str, str]], str]:
 
 def save_key_store(keys: List[Dict[str, str]], active_id: str, user_id: int) -> None:
     conn = get_db()
-    with conn:
-        conn.execute("DELETE FROM api_keys WHERE user_id = ?", (user_id,))
-        for item in keys:
-            conn.execute(
-                "INSERT INTO api_keys (id, user_id, value, source, is_active) VALUES (?, ?, ?, ?, ?)",
-                (
-                    item.get("id"),
-                    user_id,
-                    encrypt_value(item.get("value", "")),
-                    item.get("source", "custom"),
-                    1 if item.get("id") == active_id else 0,
-                ),
-            )
+    try:
+        with conn:
+            conn.execute("DELETE FROM api_keys WHERE user_id = ?", (user_id,))
+            for item in keys:
+                conn.execute(
+                    "INSERT INTO api_keys (id, user_id, value, source, is_active) VALUES (?, ?, ?, ?, ?)",
+                    (
+                        item.get("id"),
+                        user_id,
+                        encrypt_value(item.get("value", "")),
+                        item.get("source", "custom"),
+                        1 if item.get("id") == active_id else 0,
+                    ),
+                )
+    finally:
+        conn.close()
 
 
 def mask_key(value: str) -> str:
@@ -347,21 +350,24 @@ def record_usage(user_id: Optional[int]) -> None:
     if not user_id:
         return
     conn = get_db()
-    with conn:
-        conn.execute(
-            """
-            INSERT INTO usage_stats (user_id, total_calls, last_used_at)
-            VALUES (?, 1, ?)
-            ON CONFLICT(user_id) DO UPDATE SET
-                total_calls = total_calls + 1,
-                last_used_at = excluded.last_used_at
-            """,
-            (user_id, datetime.utcnow().isoformat()),
-        )
+    try:
+        with conn:
+            conn.execute(
+                """
+                INSERT INTO usage_stats (user_id, total_calls, last_used_at)
+                VALUES (?, 1, ?)
+                ON CONFLICT(user_id) DO UPDATE SET
+                    total_calls = total_calls + 1,
+                    last_used_at = excluded.last_used_at
+                """,
+                (user_id, datetime.utcnow().isoformat()),
+            )
+    finally:
+        conn.close()
 
 
 def is_authenticated() -> bool:
-    return bool(session.get("authenticated"))
+    return bool(session.get("authenticated")) and session.get("user_id") is not None
 
 
 def current_user_id() -> Optional[int]:

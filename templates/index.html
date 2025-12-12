@@ -21,7 +21,8 @@
       </div>
 
       <nav class="rail__nav" role="tablist" aria-label="功能切换">
-        <button class="rail__icon active" data-feature="draw" aria-selected="true" role="tab" type="button" title="图像生成">🎨</button>
+        <button class="rail__icon active" data-feature="home" aria-selected="true" role="tab" type="button" title="首页">🏠</button>
+        <button class="rail__icon" data-feature="draw" aria-selected="false" role="tab" type="button" title="图像生成">🎨</button>
         <button class="rail__icon" data-feature="keys" aria-selected="false" role="tab" type="button" title="Api key 管理">🔑</button>
         <button class="rail__icon" data-feature="chat" aria-selected="false" role="tab" type="button" title="大模型对话">💬</button>
       </nav>
@@ -84,6 +85,7 @@
       </div>
       {% endif %}
 
+      <div id="feature-home" class="feature-section active">
       <div class="filters" role="tablist" aria-label="视图筛选">
         <button class="pill pill--filter active" type="button">所有</button>
         <button class="pill pill--filter" type="button">我的</button>
@@ -161,18 +163,9 @@
           </article>
         </div>
       </section>
+      </div>
 
-      <section class="workbench">
-        <div class="workbench__header">
-          <div>
-            <p class="eyebrow">工作台</p>
-            <h2>实时操作</h2>
-            <p class="muted">点击上方卡片或侧栏图标切换不同功能。</p>
-          </div>
-          <div class="pill pill--soft">三种能力</div>
-        </div>
-
-        <div class="feature-section active" id="feature-draw">
+      <div class="feature-section" id="feature-draw" hidden>
           <main class="grid">
             <section class="panel">
               <div class="panel__header">
@@ -360,7 +353,6 @@
             <div class="chat__empty">尚无对话，输入内容开始与模型交流。</div>
           </div>
         </section>
-      </section>
     </div>
   </div>
   <script>window.__API_HOST__ = "{{ api_host }}";</script>

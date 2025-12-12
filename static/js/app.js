@@ -650,7 +650,7 @@ featureShortcuts.forEach((card) => {
   card.addEventListener('click', () => setFeature(card.dataset.featureTarget));
 });
 
-setFeature('draw');
+setFeature('home');
 
 appendLog('准备就绪，填写提示词即可开始生成。');
 
