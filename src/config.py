@@ -34,7 +34,7 @@ class Config:
         )
 
         # 服务器配置
-        self.port = int(os.getenv("PORT", "5000"))
+        self.port = int(os.getenv("PORT", "5001"))
 
         # 数据库配置
         self.data_dir = os.getenv("DATA_DIR", "data")

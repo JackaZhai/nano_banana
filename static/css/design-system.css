@@ -4,55 +4,60 @@
 
 /* ===== 设计令牌 ===== */
 :root {
-  /* 色彩系统 - 深色主题 */
-  --color-bg-primary: #0f172a;
-  --color-bg-secondary: #1e293b;
-  --color-bg-tertiary: #334155;
-  --color-bg-surface: rgba(255, 255, 255, 0.05);
-  --color-bg-surface-hover: rgba(255, 255, 255, 0.08);
-  --color-bg-surface-active: rgba(255, 255, 255, 0.12);
+  /* 色彩系统 - 深色主题 (现代简约中式) */
+  --color-bg-primary: #1a1a1a;
+  --color-bg-secondary: #252525;
+  --color-bg-tertiary: #323232;
+  --color-bg-surface: rgba(245, 240, 230, 0.03);
+  --color-bg-surface-hover: rgba(245, 240, 230, 0.06);
+  --color-bg-surface-active: rgba(245, 240, 230, 0.09);
+  --color-bg-surface-elevated: rgba(245, 240, 230, 0.08);
+  --color-bg-surface-highlight: rgba(137, 207, 240, 0.08);
+  --color-bg-surface-subtle: rgba(245, 240, 230, 0.02);
 
-  --color-text-primary: #f8fafc;
-  --color-text-secondary: #cbd5e1;
-  --color-text-tertiary: #94a3b8;
-  --color-text-muted: #64748b;
+  --color-text-primary: #f5f0e6;
+  --color-text-secondary: #d1cbc1;
+  --color-text-tertiary: #a8a39e;
+  --color-text-muted: #8a8279;
 
-  --color-border: rgba(255, 255, 255, 0.1);
-  --color-border-hover: rgba(255, 255, 255, 0.2);
-  --color-border-focus: rgba(99, 102, 241, 0.5);
+  --color-border: rgba(245, 240, 230, 0.08);
+  --color-border-hover: rgba(245, 240, 230, 0.16);
+  --color-border-focus: rgba(137, 207, 240, 0.5);
 
-  /* 品牌色 */
-  --color-primary: #8b5cf6;
-  --color-primary-hover: #7c3aed;
-  --color-primary-active: #6d28d9;
-  --color-primary-light: rgba(139, 92, 246, 0.1);
+  /* 品牌色 - 马卡龙色系 */
+  --color-primary: #89CFF0; /* 马卡龙浅蓝色 */
+  --color-primary-hover: #6FB8E0;
+  --color-primary-active: #4FA3D0;
+  --color-primary-light: rgba(137, 207, 240, 0.08);
 
-  --color-secondary: #10b981;
-  --color-secondary-hover: #059669;
-  --color-secondary-active: #047857;
+  --color-secondary: #FFB7C5; /* 马卡龙柔粉色 */
+  --color-secondary-hover: #E09FAF;
+  --color-secondary-active: #C28797;
 
-  --color-accent: #f59e0b;
-  --color-accent-hover: #d97706;
-  --color-accent-active: #b45309;
+  --color-accent: #98FB98; /* 马卡龙淡绿色 */
+  --color-accent-hover: #7CE67C;
+  --color-accent-active: #60D160;
 
   /* 状态色 */
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
-  --color-error: #ef4444;
-  --color-info: #3b82f6;
+  --color-success: #77DD77; /* 柔和绿色 */
+  --color-warning: #FFB347; /* 柔和橙色 */
+  --color-error: #FF7F7F; /* 柔和珊瑚色 */
+  --color-info: #77B5FE; /* 柔和蓝色 */
 
-  /* 渐变 */
-  --gradient-primary: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
-  --gradient-secondary: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  --gradient-accent: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-  --gradient-surface: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  /* 渐变 - 马卡龙色系 */
+  --gradient-primary: linear-gradient(135deg, #89CFF0 0%, #6FB8E0 100%);
+  --gradient-secondary: linear-gradient(135deg, #FFB7C5 0%, #E09FAF 100%);
+  --gradient-accent: linear-gradient(135deg, #98FB98 0%, #7CE67C 100%);
+  --gradient-surface: linear-gradient(135deg, rgba(245, 240, 230, 0.03) 0%, rgba(245, 240, 230, 0.01) 100%);
 
   /* 阴影 */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  --shadow-glow: 0 0 20px rgba(139, 92, 246, 0.3);
+  --shadow-glow: 0 0 20px rgba(137, 207, 240, 0.25);
+  --shadow-elevated: 0 8px 30px rgba(0, 0, 0, 0.2);
+  --shadow-floating: 0 15px 35px rgba(0, 0, 0, 0.25);
 
   /* 圆角 */
   --radius-xs: 4px;
@@ -76,8 +81,8 @@
   --space-20: 5rem;    /* 80px */
 
   /* 字体 */
-  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --font-family-mono: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', monospace;
+  --font-family: 'PingFang SC', 'Microsoft YaHei', 'Source Han Sans SC', 'HarmonyOS Sans SC', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-family-mono: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', 'Source Han Mono SC', 'Monaco', 'Consolas', monospace;
 
   --font-size-xs: 0.75rem;   /* 12px */
   --font-size-sm: 0.875rem;  /* 14px */
@@ -108,21 +113,24 @@
 
 /* ===== 浅色主题 ===== */
 [data-theme="light"] {
-  --color-bg-primary: #ffffff;
-  --color-bg-secondary: #f8fafc;
-  --color-bg-tertiary: #f1f5f9;
-  --color-bg-surface: rgba(0, 0, 0, 0.02);
-  --color-bg-surface-hover: rgba(0, 0, 0, 0.04);
-  --color-bg-surface-active: rgba(0, 0, 0, 0.08);
+  --color-bg-primary: #f5f0e6;
+  --color-bg-secondary: #e8e0d5;
+  --color-bg-tertiary: #dcd4c9;
+  --color-bg-surface: rgba(26, 26, 26, 0.015);
+  --color-bg-surface-hover: rgba(26, 26, 26, 0.03);
+  --color-bg-surface-active: rgba(26, 26, 26, 0.06);
+  --color-bg-surface-elevated: rgba(26, 26, 26, 0.05);
+  --color-bg-surface-highlight: rgba(137, 207, 240, 0.08);
+  --color-bg-surface-subtle: rgba(26, 26, 26, 0.01);
 
-  --color-text-primary: #0f172a;
-  --color-text-secondary: #334155;
-  --color-text-tertiary: #64748b;
-  --color-text-muted: #94a3b8;
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #2d2d2d;
+  --color-text-tertiary: #4d4d4d;
+  --color-text-muted: #6d6d6d;
 
-  --color-border: rgba(0, 0, 0, 0.1);
-  --color-border-hover: rgba(0, 0, 0, 0.2);
-  --color-border-focus: rgba(99, 102, 241, 0.5);
+  --color-border: rgba(26, 26, 26, 0.08);
+  --color-border-hover: rgba(26, 26, 26, 0.16);
+  --color-border-focus: rgba(137, 207, 240, 0.4);
 
   --glass-bg: rgba(255, 255, 255, 0.7);
   --glass-border: rgba(255, 255, 255, 0.8);
@@ -286,6 +294,9 @@ p {
 .bg-secondary { background-color: var(--color-bg-secondary); }
 .bg-tertiary { background-color: var(--color-bg-tertiary); }
 .bg-surface { background-color: var(--color-bg-surface); }
+.bg-surface-elevated { background-color: var(--color-bg-surface-elevated); }
+.bg-surface-highlight { background-color: var(--color-bg-surface-highlight); }
+.bg-surface-subtle { background-color: var(--color-bg-surface-subtle); }
 
 .bg-gradient-primary { background: var(--gradient-primary); }
 .bg-gradient-secondary { background: var(--gradient-secondary); }
@@ -319,6 +330,8 @@ p {
 .shadow-lg { box-shadow: var(--shadow-lg); }
 .shadow-xl { box-shadow: var(--shadow-xl); }
 .shadow-glow { box-shadow: var(--shadow-glow); }
+.shadow-elevated { box-shadow: var(--shadow-elevated); }
+.shadow-floating { box-shadow: var(--shadow-floating); }
 
 /* ===== 玻璃态效果 ===== */
 .glass {

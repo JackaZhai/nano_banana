@@ -8,7 +8,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Favicon -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+    <style>
+        /* Fallback for Font Awesome icons */
+        .fas, .fa, .nav-icon, .stat-icon, .activity-icon, .conversation-avatar, .message-avatar, .status-icon {
+            font-family: 'Font Awesome 6 Free', 'Font Awesome 6 Brands', Arial, sans-serif;
+        }
+    </style>
 </head>
 <body>
     <div class="app-container">
