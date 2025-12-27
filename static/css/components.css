@@ -58,8 +58,9 @@
 }
 
 .btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px rgba(137, 207, 240, 0.5), var(--shadow-glow);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
 }
 
 .btn-secondary {
@@ -80,8 +81,11 @@
 }
 
 .btn-outline:hover {
-  background: var(--color-bg-surface);
-  border-color: var(--color-border-hover);
+  background: linear-gradient(135deg, var(--color-bg-surface-highlight) 0%, var(--color-bg-surface-elevated) 100%);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-ghost {
@@ -102,7 +106,7 @@
 }
 
 .btn-danger:hover {
-  background: #dc2626;
+  background: #FF9E9E; /* 更浅的珊瑚色 */
 }
 
 .btn-success {
@@ -112,7 +116,7 @@
 }
 
 .btn-success:hover {
-  background: #059669;
+  background: #5ACD5A; /* 更深的柔和绿色 */
 }
 
 /* 按钮尺寸 */
@@ -467,32 +471,32 @@
 }
 
 .badge-secondary {
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(255, 183, 197, 0.1);
   color: var(--color-secondary);
 }
 
 .badge-accent {
-  background: rgba(245, 158, 11, 0.1);
+  background: rgba(152, 251, 152, 0.1);
   color: var(--color-accent);
 }
 
 .badge-success {
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(119, 221, 119, 0.1);
   color: var(--color-success);
 }
 
 .badge-warning {
-  background: rgba(245, 158, 11, 0.1);
+  background: rgba(255, 179, 71, 0.1);
   color: var(--color-warning);
 }
 
 .badge-error {
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(255, 127, 127, 0.1);
   color: var(--color-error);
 }
 
 .badge-info {
-  background: rgba(59, 130, 246, 0.1);
+  background: rgba(119, 181, 254, 0.1);
   color: var(--color-info);
 }
 
@@ -546,26 +550,26 @@
 
 /* 警告变体 */
 .alert-info {
-  background: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  background: rgba(119, 181, 254, 0.1);
+  border: 1px solid rgba(119, 181, 254, 0.2);
   color: var(--color-info);
 }
 
 .alert-success {
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  background: rgba(119, 221, 119, 0.1);
+  border: 1px solid rgba(119, 221, 119, 0.2);
   color: var(--color-success);
 }
 
 .alert-warning {
-  background: rgba(245, 158, 11, 0.1);
-  border: 1px solid rgba(245, 158, 11, 0.2);
+  background: rgba(255, 179, 71, 0.1);
+  border: 1px solid rgba(255, 179, 71, 0.2);
   color: var(--color-warning);
 }
 
 .alert-error {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  background: rgba(255, 127, 127, 0.1);
+  border: 1px solid rgba(255, 127, 127, 0.2);
   color: var(--color-error);
 }
 

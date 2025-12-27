@@ -8,7 +8,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Favicon -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+    <style>
+        /* Fallback for Font Awesome icons */
+        .fas, .fa, .nav-icon, .stat-icon, .activity-icon, .conversation-avatar, .message-avatar, .status-icon {
+            font-family: 'Font Awesome 6 Free', 'Font Awesome 6 Brands', Arial, sans-serif;
+        }
+    </style>
 </head>
 <body>
     <div class="app-container">
@@ -98,8 +107,8 @@
                 <div class="page-section active" id="page-dashboard">
                     <div class="dashboard">
                         <div class="content-card-header">
-                            <h2 class="content-card-title">仪表盘</h2>
-                            <p class="content-card-subtitle">API 余额与模型状态</p>
+                            <h2 class="content-card-title">???</h2>
+                            <p class="content-card-subtitle">API ???????</p>
                         </div>
 
                         <div class="stats-grid">
@@ -108,13 +117,13 @@
                                     <i class="fas fa-coins"></i>
                                 </div>
                                 <div class="stat-value" id="creditsBalance">--</div>
-                                <div class="stat-label">积分余额</div>
+                                <div class="stat-label">????</div>
                             </div>
                             <div class="stat-card">
                                 <div class="stat-icon">
                                     <i class="fas fa-key"></i>
                                 </div>
-                                <div class="stat-value" id="apiKeyStatus">未设置</div>
+                                <div class="stat-value" id="apiKeyStatus">???</div>
                                 <div class="stat-label">API Key</div>
                             </div>
                             <div class="stat-card">
@@ -122,13 +131,13 @@
                                     <i class="fas fa-server"></i>
                                 </div>
                                 <div class="stat-value" id="apiHostDisplay">--</div>
-                                <div class="stat-label">API 主机</div>
+                                <div class="stat-label">API ??</div>
                             </div>
                         </div>
 
                         <div class="content-card">
                             <div class="content-card-header">
-                                <h3 class="content-card-title">模型状态</h3>
+                                <h3 class="content-card-title">????</h3>
                                 <button class="btn btn-ghost btn-sm" id="refreshModelStatus">
                                     <i class="fas fa-sync-alt"></i>
                                     ??
@@ -141,7 +150,6 @@
                     </div>
                 </div>
 
-                <!-- 图像生成页面 -->
                 <div class="page-section" id="page-image-generation">
                     <div class="image-generation">
                         <div class="content-card-header">

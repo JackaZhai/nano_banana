@@ -5,7 +5,7 @@ from typing import Any
 
 from flask import Blueprint, jsonify, request, Response, render_template
 
-from .decorators import api_login_required, handle_api_errors
+from .decorators import api_login_required, handle_api_errors, login_required
 from ..services.auth import get_auth_service
 from ..services.api_key_service import get_api_key_service
 from ..services.ai_service import get_ai_service
@@ -154,7 +154,7 @@ main_bp = Blueprint('main', __name__)
 
 
 @main_bp.get("/")
-@api_login_required
+@login_required
 def index() -> Any:
     """主页面"""
     from ..config import get_config

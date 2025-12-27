@@ -20,9 +20,14 @@
       "Bash(./test_ssh_port.sh:*)",
       "Bash(ls:*)",
       "Bash(openssl rand:*)",
+<<<<<<< HEAD
       "Bash(./deploy.sh:*)",
       "Bash(./deploy_manual.sh:*)",
       "Bash(scp:*)"
+=======
+      "Bash(./deploy/deploy.sh:*)",
+      "Bash(./deploy/deploy_manual.sh:*)"
+>>>>>>> fe320293f323176be6f529164dbcbc9b9c135b59
     ]
   }
 }
