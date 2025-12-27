@@ -1,4 +1,4 @@
-# Matchbox AI 服务部署指南
+# a.zhai's ToolBox 服务部署指南
 
 ## 服务器信息
 - **IP地址**: 8.136.3.19
@@ -145,7 +145,7 @@ EOF
 ```bash
 cat > /etc/systemd/system/matchbox.service << EOF
 [Unit]
-Description=Matchbox AI Service
+Description=a.zhai's ToolBox Service
 After=network.target
 
 [Service]

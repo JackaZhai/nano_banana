@@ -9,7 +9,7 @@ APP_NAME="matchbox"
 APP_DIR="/opt/$APP_NAME"
 APP_PORT="1200"
 
-echo "继续部署 Matchbox AI 服务..."
+echo "继续部署 a.zhai's ToolBox 服务..."
 echo "========================================"
 
 # 1. 创建应用目录和用户
@@ -136,7 +136,7 @@ echo "6. 创建systemd服务..."
 ssh -p 22 $SERVER_USER@$SERVER_IP << EOF
     cat > /etc/systemd/system/$APP_NAME.service << 'SERVICEEOF'
 [Unit]
-Description=Matchbox AI Service
+Description=a.zhai's ToolBox Service
 After=network.target
 
 [Service]
@@ -192,7 +192,7 @@ EOF
 echo "✓ Nginx配置完成"
 
 # 8. 启动服务
-echo "8. 启动Matchbox服务..."
+echo "8. 启动a.zhai's ToolBox服务..."
 ssh -p 22 $SERVER_USER@$SERVER_IP << EOF
     systemctl enable $APP_NAME
     systemctl start $APP_NAME

@@ -167,3 +167,9 @@ def index() -> Any:
     has_api_key = bool(api_key_service.get_active_api_key_value(user_id))
 
     return render_template("index.html", api_host=config.api_host, has_api_key=has_api_key)
+
+
+@main_bp.get("/manual")
+def manual() -> Any:
+    """用户手册"""
+    return render_template("manual.html")

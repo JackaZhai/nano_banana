@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>控制台 | Matchbox AI</title>
+    <title>控制台 | a.zhai's ToolBox</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -20,8 +20,8 @@
                         <i class="fas fa-brain"></i>
                     </div>
                     <div class="brand-text">
-                        <div class="brand-title">Matchbox</div>
-                        <div class="brand-subtitle">AI Studio</div>
+                        <div class="brand-title">a.zhai's ToolBox</div>
+                        <div class="brand-subtitle">ToolBox</div>
                     </div>
                 </a>
             </div>
@@ -50,7 +50,7 @@
             </nav>
 
             <div class="sidebar-footer">
-                <a href="/logout" class="user-menu">
+                <div class="user-menu">
                     <div class="user-avatar">
                         <i class="fas fa-user"></i>
                     </div>
@@ -59,7 +59,7 @@
                         <div class="user-email">admin@nanobanana.ai</div>
                     </div>
                     <div class="user-status">在线</div>
-                </a>
+                </div>
             </div>
         </aside>
 
@@ -70,7 +70,7 @@
                 <div class="topbar-left">
                     <div class="page-title">
                         <h1 id="pageTitle">仪表盘</h1>
-                        <p class="page-subtitle" id="pageSubtitle">欢迎使用 Matchbox AI 服务平台</p>
+                        <p class="page-subtitle" id="pageSubtitle">欢迎使用 a.zhai's ToolBox 服务平台</p>
                     </div>
                 </div>
 
@@ -97,87 +97,45 @@
                 <!-- 仪表盘页面 -->
                 <div class="page-section active" id="page-dashboard">
                     <div class="dashboard">
-                        <!-- 欢迎横幅 -->
-                        <div class="welcome-banner">
-                            <div class="welcome-content">
-                                <h2 class="welcome-title">👋 欢迎回来！</h2>
-                                <p class="welcome-subtitle">开始使用 AI 图像生成和智能对话功能，探索无限可能。</p>
+                        <div class="content-card-header">
+                            <h2 class="content-card-title">仪表盘</h2>
+                            <p class="content-card-subtitle">API 余额与模型状态</p>
+                        </div>
 
-                                <div class="stats-grid">
-                                    <div class="stat-card">
-                                        <div class="stat-icon">
-                                            <i class="fas fa-image"></i>
-                                        </div>
-                                        <div class="stat-value" id="totalImages">0</div>
-                                        <div class="stat-label">生成图像</div>
-                                    </div>
-                                    <div class="stat-card">
-                                        <div class="stat-icon">
-                                            <i class="fas fa-comment"></i>
-                                        </div>
-                                        <div class="stat-value" id="totalChats">0</div>
-                                        <div class="stat-label">对话次数</div>
-                                    </div>
-                                    <div class="stat-card">
-                                        <div class="stat-icon">
-                                            <i class="fas fa-bolt"></i>
-                                        </div>
-                                        <div class="stat-value" id="apiUsage">0</div>
-                                        <div class="stat-label">API 调用</div>
-                                    </div>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-coins"></i>
                                 </div>
-
-                                <div class="quick-actions">
-                                    <a href="#" class="quick-action" data-target="image-generation">
-                                        <div class="quick-action-icon">
-                                            <i class="fas fa-palette"></i>
-                                        </div>
-                                        <h3 class="quick-action-title">图像生成</h3>
-                                        <p class="quick-action-description">使用 AI 生成高质量图像，支持多种模型和参数</p>
-                                        <button class="btn btn-sm btn-primary">开始使用</button>
-                                    </a>
-                                    <a href="#" class="quick-action" data-target="chat">
-                                        <div class="quick-action-icon">
-                                            <i class="fas fa-comments"></i>
-                                        </div>
-                                        <h3 class="quick-action-title">智能对话</h3>
-                                        <p class="quick-action-description">与多种大语言模型进行自然对话，支持流式响应</p>
-                                        <button class="btn btn-sm btn-primary">开始对话</button>
-                                    </a>
+                                <div class="stat-value" id="creditsBalance">--</div>
+                                <div class="stat-label">积分余额</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-key"></i>
                                 </div>
+                                <div class="stat-value" id="apiKeyStatus">未设置</div>
+                                <div class="stat-label">API Key</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-server"></i>
+                                </div>
+                                <div class="stat-value" id="apiHostDisplay">--</div>
+                                <div class="stat-label">API 主机</div>
                             </div>
                         </div>
 
-                        <!-- 最近活动 -->
-                        <div class="recent-activities">
+                        <div class="content-card">
                             <div class="content-card-header">
-                                <h2 class="content-card-title">最近活动</h2>
-                                <button class="btn btn-ghost btn-sm" id="refreshActivities">
+                                <h3 class="content-card-title">模型状态</h3>
+                                <button class="btn btn-ghost btn-sm" id="refreshModelStatus">
                                     <i class="fas fa-sync-alt"></i>
-                                    刷新
+                                    ??
                                 </button>
                             </div>
-                            <div class="activity-list" id="activitiesList">
-                                <div class="activity-item">
-                                    <div class="activity-icon">
-                                        <i class="fas fa-image"></i>
-                                    </div>
-                                    <div class="activity-content">
-                                        <div class="activity-title">图像生成任务已提交</div>
-                                        <div class="activity-description">使用 nano-banana-pro 模型</div>
-                                    </div>
-                                    <div class="activity-time">刚刚</div>
-                                </div>
-                                <div class="activity-item">
-                                    <div class="activity-icon">
-                                        <i class="fas fa-comment"></i>
-                                    </div>
-                                    <div class="activity-content">
-                                        <div class="activity-title">与 GPT-4 的对话已开始</div>
-                                        <div class="activity-description">讨论 AI 发展趋势</div>
-                                    </div>
-                                    <div class="activity-time">5分钟前</div>
-                                </div>
+                            <div class="content-card-body">
+                                <div class="model-status-list" id="modelStatusList"></div>
                             </div>
                         </div>
                     </div>
@@ -233,6 +191,13 @@
                                     </select>
                                 </div>
 
+                                <div class="parameter-group">
+                                    <label class="parameter-label">参考图</label>
+                                    <input type="file" id="referenceImagesInput" class="form-input" accept="image/*" multiple>
+                                    <div class="parameter-hint">最多 3 张，每张不超过 5MB。</div>
+                                    <div class="reference-list" id="referenceImagesList"></div>
+                                </div>
+
                                 <div class="form-actions">
                                     <button class="btn btn-primary btn-lg" id="generateBtn">
                                         <i class="fas fa-magic"></i>
@@ -282,89 +247,17 @@
 
                 <!-- 智能对话页面 -->
                 <div class="page-section" id="page-chat">
-                    <div class="chat-layout">
-                        <!-- 对话列表 -->
-                        <div class="conversations-panel">
-                            <div class="conversations-header">
-                                <h3>对话记录</h3>
-                                <button class="btn btn-primary btn-sm" id="newChatBtn">
-                                    <i class="fas fa-plus"></i>
-                                    新对话
-                                </button>
+                    <div class="content-card-header">
+                        <h2 class="content-card-title">智能对话</h2>
+                        <p class="content-card-subtitle">功能正在开发中</p>
+                    </div>
+                    <div class="content-card">
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-tools"></i>
                             </div>
-                            <div class="conversations-list" id="chatList">
-                                <div class="conversation-item active">
-                                    <div class="conversation-avatar">
-                                        <i class="fas fa-comment"></i>
-                                    </div>
-                                    <div class="conversation-content">
-                                        <div class="conversation-title">欢迎对话</div>
-                                        <div class="conversation-preview">你好！我是AI助手...</div>
-                                    </div>
-                                    <div class="conversation-time">刚刚</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 聊天界面 -->
-                        <div class="chat-interface">
-                            <div class="chat-header">
-                                <div class="chat-model">
-                                    <i class="fas fa-robot"></i>
-                                    <span>GPT-4o Mini</span>
-                                </div>
-                                <div class="chat-header-actions">
-                                    <button class="btn btn-icon btn-sm" id="exportChatBtn" title="导出对话">
-                                        <i class="fas fa-download"></i>
-                                    </button>
-                                    <button class="btn btn-icon btn-sm btn-danger" id="clearChatBtn" title="清空对话">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="chat-messages" id="chatMessages">
-                                <div class="message assistant">
-                                    <div class="message-avatar">
-                                        <i class="fas fa-robot"></i>
-                                    </div>
-                                    <div class="message-content">
-                                        <div class="message-text">
-                                            你好！我是 AI 助手，很高兴为您服务。我可以帮助您解答问题、生成内容或进行对话。请问有什么可以帮您的吗？
-                                        </div>
-                                        <div class="message-time">刚刚</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="chat-input-area">
-                                <div class="chat-input-tools">
-                                    <button class="btn btn-icon btn-sm" title="附加文件">
-                                        <i class="fas fa-paperclip"></i>
-                                    </button>
-                                    <div class="chat-stream-toggle">
-                                        <label class="switch">
-                                            <input type="checkbox" id="streamToggle" checked>
-                                            <span class="switch-slider"></span>
-                                        </label>
-                                        <span>流式响应</span>
-                                    </div>
-                                </div>
-                                <div class="chat-input-wrapper">
-                                    <textarea id="chatInput" class="chat-input"
-                                              placeholder="输入您的问题或消息..." rows="3"></textarea>
-                                    <button class="btn btn-primary" id="sendMessageBtn">
-                                        <i class="fas fa-paper-plane"></i>
-                                        发送
-                                    </button>
-                                </div>
-                                <div class="chat-input-footer">
-                                    <p class="hint">
-                                        <i class="fas fa-info-circle"></i>
-                                        按 <kbd>Enter</kbd> 发送，<kbd>Shift + Enter</kbd> 换行
-                                    </p>
-                                </div>
-                            </div>
+                            <h3 class="empty-title">正在开发中</h3>
+                            <p class="text-tertiary">该模块正在完善，敬请期待。</p>
                         </div>
                     </div>
                 </div>
@@ -469,7 +362,7 @@
                     <div class="settings">
                         <div class="content-card-header">
                             <h2 class="content-card-title">系统设置</h2>
-                            <p class="content-card-subtitle">配置应用程序参数和个性化选项</p>
+                            <p class="content-card-subtitle"></p>
                         </div>
 
                         <div class="settings-group">
@@ -510,8 +403,8 @@
                                     <div class="settings-description">选择 API 服务器地址</div>
                                 </div>
                                 <select class="form-select" id="apiHostSelect" style="width: 20rem;">
-                                    <option value="https://api.grsai.com">海外节点 (api.grsai.com)</option>
-                                    <option value="https://grsai.dakka.com.cn">国内直连 (grsai.dakka.com.cn)</option>
+                                    <option value="https://api.grsai.com">海外节点</option>
+                                    <option value="https://grsai.dakka.com.cn">国内直连</option>
                                 </select>
                             </div>
                             <div class="settings-item">
@@ -585,12 +478,12 @@
                                         <i class="fas fa-brain"></i>
                                     </div>
                                     <div>
-                                        <h4>Matchbox AI</h4>
+                                        <h4>a.zhai's ToolBox</h4>
                                         <p class="text-tertiary">版本 2.0.0</p>
                                     </div>
                                 </div>
                                 <div class="about-links">
-                                    <a href="#" class="btn btn-ghost btn-sm">
+                                    <a href="/manual" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">
                                         <i class="fas fa-book"></i>
                                         用户手册
                                     </a>
@@ -604,7 +497,7 @@
                                     </a>
                                 </div>
                                 <div class="about-footer">
-                                    <p class="text-sm text-tertiary">© 2025 Matchbox AI. 保留所有权利。</p>
+                                    <p class="text-sm text-tertiary">© 2025 a.zhai's ToolBox. 保留所有权利。</p>
                                     <p class="text-xs text-muted">基于 Flask 和现代 Web 技术构建</p>
                                 </div>
                             </div>

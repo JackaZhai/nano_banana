@@ -1,5 +1,5 @@
 /* ============================================
-   MATCHBOX - API 服务层
+   a.zhai's ToolBox - API 服务层
    直接调用第三方AI API，实现完整的业务功能
    ============================================ */
 
@@ -127,6 +127,27 @@ class APIService {
             console.error('API 请求错误:', error);
             throw error;
         }
+    }
+
+    async getCredits() {
+        const body = {
+            apiKey: this.apiKey
+        };
+
+        const response = await this.makeRequest('/client/openapi/getAPIKeyCredits', 'POST', body);
+        if (response.code !== 0) {
+            throw new Error(response.msg || '获取积分失败');
+        }
+        return response.data || {};
+    }
+
+    async getModelStatus(model) {
+        const endpoint = `/client/common/getModelStatus?model=${encodeURIComponent(model)}`;
+        const response = await this.makeRequest(endpoint, 'GET');
+        if (response.code !== 0) {
+            throw new Error(response.msg || '获取模型状态失败');
+        }
+        return response.data || {};
     }
 
     // 测试 API 密钥

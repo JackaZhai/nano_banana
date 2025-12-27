@@ -1,5 +1,5 @@
 /* ============================================
-   MATCHBOX - 主应用脚本
+   a.zhai's ToolBox - 主应用脚本
    ============================================ */
 
 // 应用状态管理
@@ -8,7 +8,8 @@ const AppState = {
     theme: localStorage.getItem('theme') || 'dark',
     apiKey: null,
     isLoading: false,
-    notifications: []
+    notifications: [],
+    referenceImages: []
 };
 
 // DOM 元素缓存
@@ -39,6 +40,8 @@ const DOM = {
     modelSelect: document.getElementById('modelSelect'),
     aspectRatioSelect: document.getElementById('aspectRatioSelect'),
     resolutionSelect: document.getElementById('resolutionSelect'),
+    referenceImagesInput: document.getElementById('referenceImagesInput'),
+    referenceImagesList: document.getElementById('referenceImagesList'),
     generateBtn: document.getElementById('generateBtn'),
     resetFormBtn: document.getElementById('resetFormBtn'),
     progressBar: document.getElementById('progressBar'),
@@ -66,6 +69,13 @@ const DOM = {
     refreshKeysBtn: document.getElementById('refreshKeysBtn'),
     keysTableBody: document.getElementById('keysTableBody'),
 
+    // 仪表盘
+    creditsBalance: document.getElementById('creditsBalance'),
+    apiKeyStatusText: document.getElementById('apiKeyStatus'),
+    apiHostDisplay: document.getElementById('apiHostDisplay'),
+    refreshModelStatus: document.getElementById('refreshModelStatus'),
+    modelStatusList: document.getElementById('modelStatusList'),
+
     // 设置
     timeoutSelect: document.getElementById('timeoutSelect'),
     retrySelect: document.getElementById('retrySelect')
@@ -75,7 +85,7 @@ const DOM = {
 const PageConfig = {
     dashboard: {
         title: '仪表盘',
-        subtitle: '欢迎使用 Matchbox AI 服务平台'
+        subtitle: "a.zhai's ToolBox 运行状态"
     },
     'image-generation': {
         title: '图像生成',
@@ -83,7 +93,7 @@ const PageConfig = {
     },
     chat: {
         title: '智能对话',
-        subtitle: '与多种大语言模型进行自然对话'
+        subtitle: '功能正在开发中'
     },
     'api-keys': {
         title: 'API 密钥',
@@ -97,13 +107,15 @@ const PageConfig = {
 
 // 初始化应用
 function initApp() {
-    console.log('初始化 Matchbox 应用...');
+    console.log("初始化 a.zhai's ToolBox 应用...");
 
     // 设置主题
     setTheme(AppState.theme);
 
     // 绑定事件
     bindEvents();
+
+    renderReferenceImages();
 
     // 加载初始数据
     loadInitialData();
@@ -160,6 +172,10 @@ function bindEvents() {
         DOM.refreshActivities.addEventListener('click', refreshActivities);
     }
 
+    if (DOM.refreshModelStatus) {
+        DOM.refreshModelStatus.addEventListener('click', refreshModelStatuses);
+    }
+
     // 图像生成事件
     if (DOM.generateBtn) {
         DOM.generateBtn.addEventListener('click', generateImage);
@@ -167,6 +183,12 @@ function bindEvents() {
 
     if (DOM.resetFormBtn) {
         DOM.resetFormBtn.addEventListener('click', resetImageForm);
+    }
+
+    if (DOM.referenceImagesInput) {
+        DOM.referenceImagesInput.addEventListener('change', (e) => {
+            handleReferenceImages(e.target.files);
+        });
     }
 
     if (DOM.clearBtn) {
@@ -339,11 +361,204 @@ async function loadInitialData() {
 
 // 加载仪表盘数据
 function loadDashboardData() {
-    // 加载最近活动
-    refreshActivities();
+    updateDashboardStats();
+}
+
+function getDashboardModels() {
+    const models = [];
+    if (window.APIConfig && Array.isArray(window.APIConfig.imageModels)) {
+        window.APIConfig.imageModels.forEach((model) => {
+            models.push({ id: model.id, name: model.name });
+        });
+    }
+    if (window.APIConfig && Array.isArray(window.APIConfig.chatModels)) {
+        window.APIConfig.chatModels.forEach((model) => {
+            if (!models.find((item) => item.id === model.id)) {
+                models.push({ id: model.id, name: model.name });
+            }
+        });
+    }
+    return models;
+}
+
+async function refreshCreditsBalance() {
+    if (!DOM.creditsBalance) return;
+
+    if (!window.APIService || !window.APIService.apiKey) {
+        DOM.creditsBalance.textContent = '--';
+        return;
+    }
+
+    try {
+        const result = await window.APIService.getCredits();
+        DOM.creditsBalance.textContent = typeof result.credits === 'number' ? result.credits : '--';
+    } catch (error) {
+        DOM.creditsBalance.textContent = '--';
+        console.error('获取积分余额失败:', error);
+        showNotification(`积分余额获取失败: ${error.message || '请求失败'}`, 'error');
+    }
+}
+
+function updateDashboardKeyStatus() {
+    if (!DOM.apiKeyStatusText) return;
+    const hasKey = window.APIService && window.APIService.apiKey;
+    DOM.apiKeyStatusText.textContent = hasKey ? '已设置' : '未设置';
+}
+
+function updateDashboardHost() {
+    if (!DOM.apiHostDisplay) return;
+    if (!window.APIService || !window.APIService.apiHost) {
+        DOM.apiHostDisplay.textContent = '--';
+        return;
+    }
+
+    const host = window.APIService.apiHost;
+    const isDomestic = host.includes('dakka.com.cn');
+    DOM.apiHostDisplay.textContent = isDomestic ? '国内直连' : '海外节点';
+}
+
+async function refreshModelStatuses() {
+    if (!DOM.modelStatusList) return;
+
+    const models = getDashboardModels();
+    if (models.length === 0) {
+        DOM.modelStatusList.innerHTML = '<div class="model-status-empty">暂无模型</div>';
+        return;
+    }
+
+    DOM.modelStatusList.innerHTML = '<div class="model-status-loading">正在获取模型状态...</div>';
+
+    if (!window.APIService || !window.APIService.apiKey) {
+        DOM.modelStatusList.innerHTML = '<div class="model-status-empty">请先设置 API Key</div>';
+        return;
+    }
+
+    const results = await Promise.all(models.map(async (model) => {
+        try {
+            const response = await window.APIService.getModelStatus(model.id);
+            return {
+                model,
+                status: !!response.status,
+                error: response.error || ''
+            };
+        } catch (error) {
+            return {
+                model,
+                status: false,
+                error: error.message || '获取失败'
+            };
+        }
+    }));
+
+    DOM.modelStatusList.innerHTML = results.map((item) => {
+        const badgeClass = item.status ? 'badge-success' : 'badge-error';
+        const badgeText = item.status ? '正常' : '异常';
+        const errorText = item.error ? `<div class="model-status-error">${escapeHtml(item.error)}</div>` : '';
+        return `
+            <div class="model-status-item">
+                <div class="model-status-info">
+                    <div class="model-status-name">${escapeHtml(item.model.name || item.model.id)}</div>
+                    <div class="model-status-id">${escapeHtml(item.model.id)}</div>
+                    ${errorText}
+                </div>
+                <span class="badge ${badgeClass}">${badgeText}</span>
+            </div>
+        `;
+    }).join('');
 }
 
 // 刷新活动记录
+const MAX_REFERENCE_IMAGES = 3;
+const MAX_REFERENCE_IMAGE_BYTES = 5 * 1024 * 1024;
+
+function handleReferenceImages(fileList) {
+    if (!fileList || fileList.length === 0) return;
+
+    const files = Array.from(fileList);
+    const remainingSlots = MAX_REFERENCE_IMAGES - AppState.referenceImages.length;
+
+    if (remainingSlots <= 0) {
+        showNotification('Reference image limit reached.', 'warning');
+        if (DOM.referenceImagesInput) {
+            DOM.referenceImagesInput.value = '';
+        }
+        return;
+    }
+
+    files.slice(0, remainingSlots).forEach((file) => {
+        if (!file.type || !file.type.startsWith('image/')) {
+            showNotification(`Skipped ${file.name}: not an image.`, 'warning');
+            return;
+        }
+        if (file.size > MAX_REFERENCE_IMAGE_BYTES) {
+            showNotification(`Skipped ${file.name}: file too large.`, 'warning');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            AppState.referenceImages.push({
+                name: file.name,
+                size: file.size,
+                dataUrl: reader.result
+            });
+            renderReferenceImages();
+        };
+        reader.onerror = () => {
+            showNotification(`Failed to read ${file.name}.`, 'error');
+        };
+        reader.readAsDataURL(file);
+    });
+
+    if (DOM.referenceImagesInput) {
+        DOM.referenceImagesInput.value = '';
+    }
+}
+
+function removeReferenceImage(index) {
+    AppState.referenceImages.splice(index, 1);
+    renderReferenceImages();
+}
+
+function renderReferenceImages() {
+    if (!DOM.referenceImagesList) return;
+
+    if (AppState.referenceImages.length === 0) {
+        DOM.referenceImagesList.innerHTML = '<div class=\"reference-empty\">No reference images</div>';
+        return;
+    }
+
+    DOM.referenceImagesList.innerHTML = AppState.referenceImages.map((item, index) => `
+        <div class=\"reference-item\">
+            <img src=\"${item.dataUrl}\" alt=\"Reference ${index + 1}\" class=\"reference-thumb\">
+            <div class=\"reference-meta\">
+                <div class=\"reference-name\">${escapeHtml(item.name)}</div>
+                <div class=\"reference-size\">${formatBytes(item.size)}</div>
+            </div>
+            <button class=\"reference-remove\" data-index=\"${index}\" type=\"button\">
+                <i class=\"fas fa-times\"></i>
+            </button>
+        </div>
+    `).join('');
+
+    DOM.referenceImagesList.querySelectorAll('.reference-remove').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const idx = parseInt(btn.dataset.index, 10);
+            if (!Number.isNaN(idx)) {
+                removeReferenceImage(idx);
+            }
+        });
+    });
+}
+
+function formatBytes(bytes) {
+    if (!bytes || bytes <= 0) return '0 B';
+    const units = ['B', 'KB', 'MB', 'GB'];
+    const index = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+    const value = (bytes / Math.pow(1024, index)).toFixed(index === 0 ? 0 : 1);
+    return `${value} ${units[index]}`;
+}
+
 function refreshActivities() {
     if (!DOM.activitiesList) return;
 
@@ -364,55 +579,34 @@ function refreshActivities() {
         const activities = JSON.parse(localStorage.getItem('activities') || '[]');
 
         if (activities.length === 0) {
-            // 如果没有活动记录，显示默认数据
-            const defaultActivities = [
-                {
-                    icon: 'fa-image',
-                    title: '图像生成任务已提交',
-                    description: '使用 nano-banana-pro 模型',
-                    time: '刚刚'
-                },
-                {
-                    icon: 'fa-comment',
-                    title: '与 AI 的对话已开始',
-                    description: '讨论 AI 发展趋势',
-                    time: '5分钟前'
-                },
-                {
-                    icon: 'fa-key',
-                    title: 'API 密钥已更新',
-                    description: '新增生产环境密钥',
-                    time: '1小时前'
-                }
-            ];
-
-            DOM.activitiesList.innerHTML = defaultActivities.map(activity => `
+            DOM.activitiesList.innerHTML = `
                 <div class="activity-item">
                     <div class="activity-icon">
-                        <i class="fas ${activity.icon}"></i>
+                        <i class="fas fa-circle text-tertiary"></i>
                     </div>
                     <div class="activity-content">
-                        <div class="activity-title">${activity.title}</div>
-                        <div class="activity-description">${activity.description}</div>
+                        <div class="activity-title">暂无活动记录</div>
+                        <div class="activity-description">开始一次绘图或对话后会显示在这里</div>
                     </div>
-                    <div class="activity-time">${activity.time}</div>
+                    <div class="activity-time"></div>
                 </div>
-            `).join('');
-        } else {
-            // 显示实际的活动记录
-            DOM.activitiesList.innerHTML = activities.map(activity => `
-                <div class="activity-item">
-                    <div class="activity-icon">
-                        <i class="fas ${activity.icon}"></i>
-                    </div>
-                    <div class="activity-content">
-                        <div class="activity-title">${activity.title}</div>
-                        <div class="activity-description">${activity.description}</div>
-                    </div>
-                    <div class="activity-time">${formatTime(activity.timestamp || activity.time)}</div>
-                </div>
-            `).join('');
+            `;
+            return;
         }
+
+        // 显示实际的活动记录
+        DOM.activitiesList.innerHTML = activities.map(activity => `
+            <div class="activity-item">
+                <div class="activity-icon">
+                    <i class="fas ${activity.icon}"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">${activity.title}</div>
+                    <div class="activity-description">${activity.description}</div>
+                </div>
+                <div class="activity-time">${formatTime(activity.timestamp || activity.time)}</div>
+            </div>
+        `).join('');
     }, 300);
 }
 
@@ -444,22 +638,10 @@ function addActivity(activity) {
 // 更新仪表盘统计数据
 async function updateDashboardStats() {
     try {
-        if (window.APIService) {
-            const stats = await window.APIService.getUserStats();
-
-            if (DOM.totalImages) {
-                DOM.totalImages.textContent = stats.totalImages || 0;
-            }
-            if (DOM.totalChats) {
-                DOM.totalChats.textContent = stats.totalChats || 0;
-            }
-            if (DOM.apiUsage) {
-                DOM.apiUsage.textContent = stats.apiUsage || 0;
-            }
-            if (DOM.lastUsedTime && stats.lastUsedAt) {
-                DOM.lastUsedTime.textContent = formatTime(stats.lastUsedAt);
-            }
-        }
+        updateDashboardKeyStatus();
+        updateDashboardHost();
+        await refreshCreditsBalance();
+        await refreshModelStatuses();
     } catch (error) {
         console.error('更新仪表盘统计失败:', error);
     }
@@ -505,6 +687,7 @@ async function generateImage() {
             model,
             aspectRatio,
             imageSize: resolution,
+            urls: AppState.referenceImages.map((item) => item.dataUrl),
             onProgress: (progress, message) => {
                 // 更新进度条
                 if (DOM.progressBar) {
@@ -631,6 +814,9 @@ function resetImageForm() {
     if (DOM.modelSelect) DOM.modelSelect.value = 'nano-banana';
     if (DOM.aspectRatioSelect) DOM.aspectRatioSelect.value = 'auto';
     if (DOM.resolutionSelect) DOM.resolutionSelect.value = '1K';
+    if (DOM.referenceImagesInput) DOM.referenceImagesInput.value = '';
+    AppState.referenceImages = [];
+    renderReferenceImages();
 
     if (DOM.progressBar) DOM.progressBar.style.width = '0%';
     if (DOM.progressText) DOM.progressText.textContent = '0%';
@@ -1440,7 +1626,7 @@ function addNotificationStyles() {
     style.textContent = `
         .notification {
             position: fixed;
-            top: 1rem;
+            bottom: 1rem;
             right: 1rem;
             background: var(--color-bg-surface);
             border: 1px solid var(--color-border);
@@ -1451,13 +1637,16 @@ function addNotificationStyles() {
             gap: var(--space-3);
             box-shadow: var(--shadow-lg);
             z-index: 1000;
-            transform: translateX(120%);
-            transition: transform 0.3s ease;
             max-width: 24rem;
+            opacity: 0;
+            transform: translateY(16px) scale(0.98);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            backdrop-filter: blur(6px);
         }
 
         .notification.show {
-            transform: translateX(0);
+            opacity: 1;
+            transform: translateY(0) scale(1);
         }
 
         .notification-icon {

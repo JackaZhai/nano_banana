@@ -1,4 +1,4 @@
-# MatchAI
+# a.zhai's ToolBox
 
 ## 部署到服务器并通过外网访问
 
@@ -18,7 +18,7 @@
 在启动前配置以下变量（可写入 `.env` 或直接导出）：
 
 - `APP_SECRET_KEY`：Flask 会话密钥，必填，使用随机字符串。
-- `APP_USERNAME` / `APP_PASSWORD`：登录后台的初始账号和密码（默认 `admin` / `banana123`）。
+- `APP_USERNAME` / `APP_PASSWORD`: Optional seed account used to initialize local data.
 - `NANO_BANANA_API_KEY`：调用上游 API 的密钥。
 - 可选：`PORT` 设置监听端口（默认 `5000`），`DATA_DIR` 设置数据存储目录，`DB_PATH` 指定 SQLite 文件路径（默认 `data/app.db`）。
 
@@ -34,16 +34,15 @@ gunicorn -w 4 -b 0.0.0.0:${PORT:-5000} app:app
 
 ### 4. 开放端口并访问
 - 确认服务器安全组/防火墙允许外网访问所选端口（例如 5000）。
-- 在浏览器访问 `http://<你的公网IP>:<端口>`，即可打开登录页并使用配置的账号登录。
+- 浏览器访问 `http://<你的公网IP>:<端口>` 即可打开应用主页。
 
 ### 5. 常见问题
 - **无法访问**：检查服务器防火墙规则，或确认应用是否在监听 `0.0.0.0`。
-- **登录失败/被锁定**：密码连续输错会触发锁定，等待锁定解除或（如需重置）删除 `data/app.db` 后重启以重新创建初始账户。
-- **API Key 缺失**：登录后在页面的 “Api key 管理” 添加或在环境变量中设置 `NANO_BANANA_API_KEY`。
+- **API Key 缺失**: 在页面的 “Api key 管理” 添加，或在环境变量中设置 `NANO_BANANA_API_KEY`。
 
 ### 数据存储
 - 账号、密码哈希、API Key 以及每个账号的用量统计都会保存在 SQLite 数据库（默认 `data/app.db`）中。
-- 默认管理员账号会在数据库不存在时自动创建，可通过 `APP_USERNAME`/`APP_PASSWORD` 控制初始信息。
+- `APP_USERNAME` / `APP_PASSWORD`: Optional seed account used to initialize local data.
 - 数据目录可通过 `DATA_DIR` 或 `DB_PATH` 自定义，确保进程有写入权限。
 
 ## 界面布局概览

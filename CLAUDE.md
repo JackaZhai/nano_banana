@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Matchbox is a Flask web application that provides a web interface for AI image generation and chat completion services. It acts as a middleware between users and an upstream AI API service (GRSAI).
+a.zhai's ToolBox is a Flask web application that provides a web interface for AI image generation and chat completion services. It acts as a middleware between users and an upstream AI API service (GRSAI).
 
 ## Development Commands
 

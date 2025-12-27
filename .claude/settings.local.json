@@ -21,7 +21,8 @@
       "Bash(ls:*)",
       "Bash(openssl rand:*)",
       "Bash(./deploy.sh:*)",
-      "Bash(./deploy_manual.sh:*)"
+      "Bash(./deploy_manual.sh:*)",
+      "Bash(scp:*)"
     ]
   }
 }

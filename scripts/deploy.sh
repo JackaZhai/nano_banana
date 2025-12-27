@@ -1,11 +1,11 @@
 #!/bin/bash
-# Matchbox AI 服务部署脚本
+# a.zhai's ToolBox 服务部署脚本
 # 服务器IP: 8.136.3.19
 # 操作系统: Ubuntu 20.04/22.04
 
 set -e  # 遇到错误时退出
 
-echo "🚀 Matchbox AI 服务部署开始"
+echo "🚀 a.zhai's ToolBox 服务部署开始"
 echo "========================================"
 
 # 配置变量
@@ -58,7 +58,7 @@ SSH_PORT="${2:-22}"  # 默认使用22端口
 
 # 部署函数
 deploy() {
-    print_info "开始部署 Matchbox AI 服务到 $SERVER_IP"
+    print_info "开始部署 a.zhai's ToolBox 服务到 $SERVER_IP"
 
     # 1. 连接到服务器并更新系统
     print_info "1. 更新系统软件包..."
@@ -89,24 +89,28 @@ EOF
 
     # 3. 创建应用目录和用户
     print_info "3. 创建应用用户和目录..."
-    ssh -p $SSH_PORT $SERVER_USER@$SERVER_IP << 'EOF'
+    ssh -p $SSH_PORT $SERVER_USER@$SERVER_IP "bash -c '
         set -e
+        APP_NAME=\"matchbox\"
+        APP_DIR=\"/opt/\$APP_NAME\"
+        LOG_DIR=\"/var/log/\$APP_NAME\"
+
         # 创建应用用户（如果不存在）
-        if ! id -u $APP_NAME >/dev/null 2>&1; then
-            useradd -m -s /bin/bash -d $APP_DIR $APP_NAME
-            echo "用户 $APP_NAME 创建成功"
+        if ! id -u \$APP_NAME >/dev/null 2>&1; then
+            useradd -m -s /bin/bash -d \$APP_DIR \$APP_NAME
+            echo \"用户 \$APP_NAME 创建成功\"
         else
-            echo "用户 $APP_NAME 已存在"
+            echo \"用户 \$APP_NAME 已存在\"
         fi
 
         # 创建应用目录
-        mkdir -p $APP_DIR
-        chown -R $APP_NAME:$APP_NAME $APP_DIR
+        mkdir -p \$APP_DIR
+        chown -R \$APP_NAME:\$APP_NAME \$APP_DIR
 
         # 创建日志目录
-        mkdir -p $LOG_DIR
-        chown -R $APP_NAME:$APP_NAME $LOG_DIR
-EOF
+        mkdir -p \$LOG_DIR
+        chown -R \$APP_NAME:\$APP_NAME \$LOG_DIR
+    '"
     print_success "目录和用户创建完成"
 
     # 4. 上传应用代码
@@ -157,7 +161,7 @@ EOF
         print_info "创建默认 .env 文件"
         ssh -p $SSH_PORT $SERVER_USER@$SERVER_IP << EOF
             cat > $APP_DIR/.env << 'ENVEOF'
-# Matchbox AI 服务配置
+# a.zhai's ToolBox 服务配置
 APP_SECRET_KEY=$(openssl rand -hex 32)
 APP_USERNAME=admin
 APP_PASSWORD=banana123
@@ -217,7 +221,7 @@ EOF
     ssh -p $SSH_PORT $SERVER_USER@$SERVER_IP << EOF
         cat > /etc/systemd/system/$APP_NAME.service << 'SERVICEEOF'
 [Unit]
-Description=Matchbox AI Service
+Description=a.zhai's ToolBox Service
 After=network.target
 Requires=network.target
 
@@ -319,7 +323,7 @@ EOF
     print_success "Nginx配置完成"
 
     # 10. 启动服务
-    print_info "10. 启动Matchbox服务..."
+    print_info "10. 启动a.zhai's ToolBox服务..."
     ssh -p $SSH_PORT $SERVER_USER@$SERVER_IP << EOF
         # 启用并启动服务
         systemctl enable $APP_NAME
@@ -346,7 +350,7 @@ EOF
 
 # 更新函数
 update() {
-    print_info "更新 Matchbox AI 服务..."
+    print_info "更新 a.zhai's ToolBox 服务..."
 
     # 上传最新代码
     rsync -avz -e "ssh -p $SSH_PORT" --exclude='.git' --exclude='.venv' --exclude='__pycache__' \
@@ -360,7 +364,7 @@ update() {
 
 # 状态函数
 status() {
-    print_info "检查 Matchbox AI 服务状态..."
+    print_info "检查 a.zhai's ToolBox 服务状态..."
 
     ssh -p $SSH_PORT $SERVER_USER@$SERVER_IP << 'EOF'
         echo "=== 服务状态 ==="
@@ -380,14 +384,14 @@ EOF
 
 # 日志函数
 logs() {
-    print_info "查看 Matchbox AI 服务日志..."
+    print_info "查看 a.zhai's ToolBox 服务日志..."
 
     ssh -p $SSH_PORT $SERVER_USER@$SERVER_IP "journalctl -u $APP_NAME -f"
 }
 
 # 重启函数
 restart() {
-    print_info "重启 Matchbox AI 服务..."
+    print_info "重启 a.zhai's ToolBox 服务..."
 
     ssh -p $SSH_PORT $SERVER_USER@$SERVER_IP "systemctl restart $APP_NAME"
 
@@ -396,7 +400,7 @@ restart() {
 
 # 停止函数
 stop() {
-    print_info "停止 Matchbox AI 服务..."
+    print_info "停止 a.zhai's ToolBox 服务..."
 
     ssh -p $SSH_PORT $SERVER_USER@$SERVER_IP "systemctl stop $APP_NAME"
 

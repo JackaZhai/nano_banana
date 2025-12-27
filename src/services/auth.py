@@ -76,13 +76,27 @@ class AuthService:
         """登出用户"""
         session.clear()
 
+    def _ensure_default_session(self) -> Optional[int]:
+        """Ensure a default user session exists."""
+        if session.get("authenticated") and session.get("user_id") is not None:
+            return int(session["user_id"])
+
+        user = User.ensure_default_user()
+        session["authenticated"] = True
+        session["user_id"] = user.id
+        session["username"] = user.username
+        return user.id
+
     def is_authenticated(self) -> bool:
-        """检查用户是否已认证"""
-        return bool(session.get("authenticated")) and session.get("user_id") is not None
+        """Check whether the user is authenticated."""
+        self._ensure_default_session()
+        return True
 
     def get_current_user_id(self) -> Optional[int]:
-        """获取当前用户ID"""
+        """Get the current user id."""
         user_id = session.get("user_id")
+        if user_id is None:
+            user_id = self._ensure_default_session()
         return int(user_id) if user_id is not None else None
 
     def get_current_username(self) -> Optional[str]:
@@ -90,13 +104,11 @@ class AuthService:
         return session.get("username")
 
     def require_auth(self) -> int:
-        """要求认证，返回用户ID"""
-        if not self.is_authenticated():
-            raise AuthenticationError("请先登录")
-        user_id = self.get_current_user_id()
+        """Require authentication and return the user id."""
+        user_id = self._ensure_default_session()
         if not user_id:
-            raise AuthenticationError("用户信息无效")
-        return user_id
+            raise AuthenticationError("User session is invalid")
+        return int(user_id)
 
 
 # 全局认证服务实例
