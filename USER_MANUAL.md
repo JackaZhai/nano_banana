@@ -44,15 +44,15 @@ python app.py
 Nano Banana 系列模型在科研绘图方面表现出色。为了获得最佳效果，请遵循以下指南。
 
 #### 4.2.1 生成科研绘图的关键
-**Prompt（提示词）要像写说明书一样，描述越详细，模型生成的图像越 structured (结构化)，效果越好。**
+**Prompt（提示词）要像写说明书一样，描述越详细，模型生成的图像越结构化，效果越好。**
 
 一个实用的科研插图 Prompt，通常需要包含以下要素：
 
 *   **主题**：你要画什么（机制 / 流程 / 对比）
-*   **风格**：简洁、技术图、论文可用 (concise, technical diagram, publication quality)
-*   **标注要求**：哪些元素必须出现、使用英文标签 (English labels)
-*   **布局规则**：箭头、模块、层级关系 (arrows, modules, hierarchical relationship)
-*   **限制条件**：避免艺术化、渐变、装饰效果 (avoid artistic effects, gradients, decorative elements)
+*   **风格**：简洁、技术图、论文可用
+*   **标注要求**：哪些元素必须出现、使用英文标签
+*   **布局规则**：箭头、模块、层级关系
+*   **限制条件**：避免艺术化、渐变、装饰效果
 
 #### 4.2.2 实用 Prompt 案例库
 
@@ -80,12 +80,12 @@ Nano Banana 系列模型在科研绘图方面表现出色。为了获得最佳�
 > "Generate a study design diagram for a randomized controlled trial comparing Drug A vs placebo. Include participant enrollment, randomization, intervention, follow-up, and endpoint assessment. Keep the visual style neutral and suitable for journal submission."
 
 #### 4.2.3 重要提示
-> **⚠️ AI 永远不负责“画得 correct (对)”！**
+> **⚠️ AI 永远不负责“画得正确”！**
 
-虽然 Nano Banana 极大提升了科研绘图的 efficiency (效率)，但它并不能替你判断科学内容是否正确。
-Nano Banana 的出现，并不是为了让科研人员少思考，而是让大家少被重复 labor (劳动) 消耗。
+虽然 Nano Banana 极大提升了科研绘图的效率，但它并不能替你判断科学内容是否正确。
+Nano Banana 的出现，并不是为了让科研人员少思考，而是让大家少被重复劳动消耗。
 
-**请记住，在实际使用中，一定不要忘了 manual (人工) 校对！**
+**请记住，在实际使用中，一定不要忘了人工校对！**
 
 ### 4.3 参考图上传
 支持上传参考图（最多 3 张，每张不超过 5MB）。

@@ -100,6 +100,10 @@ const PageConfig = {
     settings: {
         title: '系统设置',
         subtitle: '配置应用程序参数和个性化选项'
+    },
+    toolbox: {
+        title: '工具箱',
+        subtitle: '实用开发与创作工具'
     }
 };
 
@@ -112,6 +116,7 @@ function initApp() {
 
     // 绑定事件
     bindEvents();
+    bindToolboxEvents();
 
     renderReferenceImages();
 
@@ -1719,6 +1724,371 @@ document.addEventListener('DOMContentLoaded', () => {
     addPreviewSuccessStyles();
     initApp();
 });
+
+// 绑定工具箱事件
+function bindToolboxEvents() {
+    initNavigationTool();
+    initScreenshotTool();
+}
+
+// 初始化导航工具
+function initNavigationTool() {
+    const navGrid = document.getElementById('toolNavGrid');
+    const addBtn = document.getElementById('toolAddNavBtn');
+    
+    if (!navGrid || !addBtn) return;
+
+    // 默认导航数据
+    const defaultNavs = [
+        { name: 'ChatGPT', url: 'https://chat.openai.com', icon: 'https://chat.openai.com/favicon.ico' },
+        { name: 'Bilibili', url: 'https://www.bilibili.com', icon: 'https://www.bilibili.com/favicon.ico' },
+        { name: '知乎', url: 'https://www.zhihu.com', icon: 'https://static.zhihu.com/heifetz/favicon.ico' },
+        { name: 'GitHub', url: 'https://github.com', icon: 'https://github.com/favicon.ico' },
+        { name: 'Google', url: 'https://www.google.com', icon: 'https://www.google.com/favicon.ico' }
+    ];
+
+    // 加载导航数据
+    function loadNavs() {
+        const saved = localStorage.getItem('toolbox_navs');
+        return saved ? JSON.parse(saved) : defaultNavs;
+    }
+
+    // 保存导航数据
+    function saveNavs(navs) {
+        localStorage.setItem('toolbox_navs', JSON.stringify(navs));
+        renderNavs();
+    }
+
+    // 渲染导航网格
+    function renderNavs() {
+        const navs = loadNavs();
+        navGrid.innerHTML = navs.map((nav, index) => `
+            <div class="toolbox-nav-item" style="position: relative;">
+                <a href="${nav.url}" target="_blank" class="toolbox-nav-link" style="display: flex; flex-direction: column; align-items: center; padding: 1rem; background: var(--color-bg-surface-hover); border-radius: var(--radius-md); text-decoration: none; color: var(--color-text-primary); transition: all 0.2s; width: 100%; height: 100%;">
+                    <img src="${nav.icon}" onerror="this.src='https://www.google.com/s2/favicons?domain=${nav.url}'" style="width: 32px; height: 32px; margin-bottom: 0.5rem; border-radius: 4px;">
+                    <span style="font-size: 0.875rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%;">${escapeHtml(nav.name)}</span>
+                </a>
+                <button class="btn-delete-nav" data-index="${index}" style="position: absolute; top: -5px; right: -5px; width: 20px; height: 20px; border-radius: 50%; background: var(--color-error); color: white; border: none; cursor: pointer; display: none; align-items: center; justify-content: center; font-size: 10px; z-index: 10;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `).join('');
+
+        // 添加删除按钮事件
+        navGrid.querySelectorAll('.toolbox-nav-item').forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                const btn = item.querySelector('.btn-delete-nav');
+                if (btn) btn.style.display = 'flex';
+            });
+            item.addEventListener('mouseleave', () => {
+                const btn = item.querySelector('.btn-delete-nav');
+                if (btn) btn.style.display = 'none';
+            });
+        });
+
+        navGrid.querySelectorAll('.btn-delete-nav').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault(); // 防止触发链接跳转
+                const index = parseInt(btn.dataset.index);
+                const currentNavs = loadNavs();
+                currentNavs.splice(index, 1);
+                saveNavs(currentNavs);
+            });
+        });
+    }
+
+    // 添加导航
+    addBtn.addEventListener('click', () => {
+        const name = prompt('请输入网站名称：');
+        if (!name) return;
+        
+        let url = prompt('请输入网站地址：', 'https://');
+        if (!url) return;
+
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            url = 'https://' + url;
+        }
+
+        const currentNavs = loadNavs();
+        currentNavs.push({
+            name,
+            url,
+            icon: `https://www.google.com/s2/favicons?domain=${url}` // 使用 Google Favicon API 作为默认图标源
+        });
+        saveNavs(currentNavs);
+    });
+
+    // 初始渲染
+    renderNavs();
+}
+
+// 初始化截图工具
+function initScreenshotTool() {
+    const screenshotBtn = document.getElementById('toolScreenshotBtn');
+    const shortcutInput = document.getElementById('toolScreenshotShortcut');
+    const clearShortcutBtn = document.getElementById('toolClearShortcutBtn');
+    const autoCopyCheckbox = document.getElementById('toolAutoCopy');
+
+    if (!screenshotBtn) return;
+
+    // 加载设置
+    const settings = JSON.parse(localStorage.getItem('toolbox_screenshot_settings') || '{"shortcut": "", "autoCopy": true}');
+    if (shortcutInput) shortcutInput.value = settings.shortcut;
+    if (autoCopyCheckbox) autoCopyCheckbox.checked = settings.autoCopy;
+
+    // 保存设置
+    function saveSettings() {
+        const newSettings = {
+            shortcut: shortcutInput.value,
+            autoCopy: autoCopyCheckbox.checked
+        };
+        localStorage.setItem('toolbox_screenshot_settings', JSON.stringify(newSettings));
+    }
+
+    // 截图功能
+    async function takeScreenshot() {
+        try {
+            const stream = await navigator.mediaDevices.getDisplayMedia({
+                video: { cursor: "always" },
+                audio: false
+            });
+
+            const video = document.createElement("video");
+            video.srcObject = stream;
+            video.play();
+
+            // 等待视频加载
+            await new Promise(resolve => video.onloadedmetadata = resolve);
+
+            // 创建画布并截图
+            const canvas = document.createElement("canvas");
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // 停止所有轨道
+            stream.getTracks().forEach(track => track.stop());
+
+            // 打开裁剪器
+            openCropper(canvas);
+
+        } catch (err) {
+            console.error("截图失败:", err);
+            if (err.name !== 'NotAllowedError') {
+                showNotification('截图失败: ' + err.message, 'error');
+            }
+        }
+    }
+
+    // 裁剪器逻辑
+    function openCropper(sourceCanvas) {
+        const modal = document.getElementById('screenshot-cropper');
+        const img = document.getElementById('cropper-img');
+        const wrapper = document.getElementById('cropper-wrapper');
+        const selection = document.getElementById('cropper-selection');
+        const sizeDisplay = document.getElementById('cropper-size');
+        const confirmBtn = document.getElementById('cropperConfirmBtn');
+        const cancelBtn = document.getElementById('cropperCancelBtn');
+
+        if (!modal || !img) return;
+
+        // 显示模态框
+        modal.style.display = 'flex';
+        img.src = sourceCanvas.toDataURL();
+
+        // 状态
+        let isDragging = false;
+        let startX = 0;
+        let startY = 0;
+        let rect = { x: 0, y: 0, w: 0, h: 0 };
+
+        // 重置选择
+        selection.style.display = 'none';
+        rect = { x: 0, y: 0, w: 0, h: 0 };
+
+        // 鼠标事件
+        function handleMouseDown(e) {
+            if (e.target.closest('.cropper-toolbar')) return;
+            isDragging = true;
+            const bounds = wrapper.getBoundingClientRect();
+            startX = e.clientX - bounds.left;
+            startY = e.clientY - bounds.top;
+            
+            // 允许反向拖拽
+            rect.x = startX;
+            rect.y = startY;
+            rect.w = 0;
+            rect.h = 0;
+
+            selection.style.display = 'block';
+            updateSelection();
+            e.preventDefault();
+        }
+
+        function handleMouseMove(e) {
+            if (!isDragging) return;
+            const bounds = wrapper.getBoundingClientRect();
+            const currentX = Math.max(0, Math.min(e.clientX - bounds.left, bounds.width));
+            const currentY = Math.max(0, Math.min(e.clientY - bounds.top, bounds.height));
+
+            rect.x = Math.min(startX, currentX);
+            rect.y = Math.min(startY, currentY);
+            rect.w = Math.abs(currentX - startX);
+            rect.h = Math.abs(currentY - startY);
+
+            updateSelection();
+        }
+
+        function handleMouseUp() {
+            isDragging = false;
+        }
+
+        function updateSelection() {
+            selection.style.left = rect.x + 'px';
+            selection.style.top = rect.y + 'px';
+            selection.style.width = rect.w + 'px';
+            selection.style.height = rect.h + 'px';
+            
+            // 计算实际像素尺寸
+            const scaleX = sourceCanvas.width / img.offsetWidth;
+            const scaleY = sourceCanvas.height / img.offsetHeight;
+            const realW = Math.round(rect.w * scaleX);
+            const realH = Math.round(rect.h * scaleY);
+            sizeDisplay.textContent = `${realW} x ${realH}`;
+        }
+
+        // 绑定事件
+        wrapper.onmousedown = handleMouseDown;
+        window.onmousemove = handleMouseMove;
+        window.onmouseup = handleMouseUp;
+
+        // 确认裁剪
+        const handleConfirm = () => {
+            // 如果没有选择区域，则使用全图
+            if (rect.w === 0 || rect.h === 0) {
+                rect.x = 0;
+                rect.y = 0;
+                rect.w = img.offsetWidth;
+                rect.h = img.offsetHeight;
+            }
+
+            const scaleX = sourceCanvas.width / img.offsetWidth;
+            const scaleY = sourceCanvas.height / img.offsetHeight;
+
+            const finalCanvas = document.createElement('canvas');
+            finalCanvas.width = rect.w * scaleX;
+            finalCanvas.height = rect.h * scaleY;
+            
+            const ctx = finalCanvas.getContext('2d');
+            ctx.drawImage(sourceCanvas, 
+                rect.x * scaleX, rect.y * scaleY, rect.w * scaleX, rect.h * scaleY,
+                0, 0, finalCanvas.width, finalCanvas.height
+            );
+
+            finalCanvas.toBlob(async (blob) => {
+                if (autoCopyCheckbox.checked) {
+                    try {
+                        await navigator.clipboard.write([
+                            new ClipboardItem({ [blob.type]: blob })
+                        ]);
+                        showNotification('截图已复制到剪贴板', 'success');
+                    } catch (err) {
+                        console.error('复制失败:', err);
+                        showNotification('自动复制失败', 'warning');
+                    }
+                }
+
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `screenshot_${new Date().getTime()}.png`;
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                closeCropper();
+            }, 'image/png');
+        };
+
+        // 取消
+        const handleCancel = () => {
+            closeCropper();
+        };
+
+        // 关闭清理
+        function closeCropper() {
+            modal.style.display = 'none';
+            wrapper.onmousedown = null;
+            window.onmousemove = null;
+            window.onmouseup = null;
+            confirmBtn.onclick = null;
+            cancelBtn.onclick = null;
+            // 清理内存
+            img.src = '';
+        }
+
+        confirmBtn.onclick = handleConfirm;
+        cancelBtn.onclick = handleCancel;
+        
+        // 双击确认
+        wrapper.ondblclick = handleConfirm;
+    }
+
+    // 绑定按钮事件
+    screenshotBtn.addEventListener('click', takeScreenshot);
+
+    // 绑定快捷键设置
+    if (shortcutInput) {
+        shortcutInput.addEventListener('keydown', (e) => {
+            e.preventDefault();
+            const keys = [];
+            if (e.ctrlKey) keys.push('Ctrl');
+            if (e.shiftKey) keys.push('Shift');
+            if (e.altKey) keys.push('Alt');
+            if (e.metaKey) keys.push('Meta');
+            
+            // 忽略单独的修饰键
+            if (['Control', 'Shift', 'Alt', 'Meta'].includes(e.key)) return;
+            
+            keys.push(e.key.toUpperCase());
+            shortcutInput.value = keys.join('+');
+            saveSettings();
+        });
+    }
+
+    if (clearShortcutBtn) {
+        clearShortcutBtn.addEventListener('click', () => {
+            shortcutInput.value = '';
+            saveSettings();
+        });
+    }
+
+    if (autoCopyCheckbox) {
+        autoCopyCheckbox.addEventListener('change', saveSettings);
+    }
+
+    // 全局快捷键监听
+    document.addEventListener('keydown', (e) => {
+        const currentShortcut = shortcutInput.value;
+        if (!currentShortcut) return;
+
+        const keys = [];
+        if (e.ctrlKey) keys.push('Ctrl');
+        if (e.shiftKey) keys.push('Shift');
+        if (e.altKey) keys.push('Alt');
+        if (e.metaKey) keys.push('Meta');
+        
+        if (['Control', 'Shift', 'Alt', 'Meta'].includes(e.key)) return;
+        
+        keys.push(e.key.toUpperCase());
+        const pressedShortcut = keys.join('+');
+
+        if (pressedShortcut === currentShortcut) {
+            e.preventDefault();
+            takeScreenshot();
+        }
+    });
+}
 
 // 导出到全局
 window.App = {
