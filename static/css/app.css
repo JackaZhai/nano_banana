@@ -116,32 +116,29 @@
   color: var(--color-accent);
 }
 
-/* 统计数值和标签颜色差异化 */
+/* 统计数值和标签颜色差异化 - 已移除，使用默认文本颜色以提高可读性 */
 .stat-card:nth-child(1) .stat-value {
-  color: var(--color-primary);
+  color: var(--color-text-primary);
 }
 
 .stat-card:nth-child(1) .stat-label {
-  color: var(--color-primary);
-  opacity: 0.8;
+  color: var(--color-text-secondary);
 }
 
 .stat-card:nth-child(2) .stat-value {
-  color: var(--color-secondary);
+  color: var(--color-text-primary);
 }
 
 .stat-card:nth-child(2) .stat-label {
-  color: var(--color-secondary);
-  opacity: 0.8;
+  color: var(--color-text-secondary);
 }
 
 .stat-card:nth-child(3) .stat-value {
-  color: var(--color-accent);
+  color: var(--color-text-primary);
 }
 
 .stat-card:nth-child(3) .stat-label {
-  color: var(--color-accent);
-  opacity: 0.8;
+  color: var(--color-text-secondary);
 }
 
 .stat-icon {

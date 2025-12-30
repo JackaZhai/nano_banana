@@ -17,10 +17,23 @@ def create_app() -> Flask:
     # 创建Flask应用
     app = Flask(__name__)
     app.secret_key = config.app_secret_key
+    app.config['JSON_AS_ASCII'] = False
 
     # 注册蓝图
     app.register_blueprint(api_bp)
     app.register_blueprint(main_bp)
+
+    @app.after_request
+    def add_header(response):
+        """Add headers to both force latest IE rendering engine or Chrome Frame,
+        and also to cache the rendered page for 10 minutes.
+        """
+        if 'Content-Type' in response.headers:
+            if 'application/javascript' in response.headers['Content-Type']:
+                response.headers['Content-Type'] = 'application/javascript; charset=utf-8'
+            elif 'text/css' in response.headers['Content-Type']:
+                response.headers['Content-Type'] = 'text/css; charset=utf-8'
+        return response
 
     # 确保默认用户存在
     from src.models.user import User

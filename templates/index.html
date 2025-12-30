@@ -56,6 +56,10 @@
                     <i class="fas fa-cog nav-icon"></i>
                     <span class="nav-label">设置</span>
                 </a>
+                <a href="https://github.com/JackaZhai/nano_banana/issues" class="nav-item" target="_blank">
+                    <i class="fas fa-bug nav-icon"></i>
+                    <span class="nav-label">Bug 反馈</span>
+                </a>
             </nav>
 
             <div class="sidebar-footer">
@@ -84,16 +88,7 @@
                 </div>
 
                 <div class="topbar-right">
-                    <div class="search-box">
-                        <i class="fas fa-search search-icon"></i>
-                        <input type="text" placeholder="搜索功能或文档..." class="search-input">
-                    </div>
-
                     <div class="topbar-actions">
-                        <button class="action-button" id="notificationsBtn" title="通知">
-                            <i class="fas fa-bell"></i>
-                            <span class="action-badge">3</span>
-                        </button>
                         <button class="action-button" id="themeToggle" title="切换主题">
                             <i class="fas fa-moon"></i>
                         </button>
@@ -107,8 +102,7 @@
                 <div class="page-section active" id="page-dashboard">
                     <div class="dashboard">
                         <div class="content-card-header">
-                            <h2 class="content-card-title">???</h2>
-                            <p class="content-card-subtitle">API ???????</p>
+                            <h2 class="content-card-title">概览</h2>
                         </div>
 
                         <div class="stats-grid">
@@ -117,13 +111,13 @@
                                     <i class="fas fa-coins"></i>
                                 </div>
                                 <div class="stat-value" id="creditsBalance">--</div>
-                                <div class="stat-label">????</div>
+                                <div class="stat-label">账户余额</div>
                             </div>
                             <div class="stat-card">
                                 <div class="stat-icon">
                                     <i class="fas fa-key"></i>
                                 </div>
-                                <div class="stat-value" id="apiKeyStatus">???</div>
+                                <div class="stat-value" id="apiKeyStatus">检查中...</div>
                                 <div class="stat-label">API Key</div>
                             </div>
                             <div class="stat-card">
@@ -131,16 +125,16 @@
                                     <i class="fas fa-server"></i>
                                 </div>
                                 <div class="stat-value" id="apiHostDisplay">--</div>
-                                <div class="stat-label">API ??</div>
+                                <div class="stat-label">API 节点</div>
                             </div>
                         </div>
 
                         <div class="content-card">
                             <div class="content-card-header">
-                                <h3 class="content-card-title">????</h3>
+                                <h3 class="content-card-title">模型状态</h3>
                                 <button class="btn btn-ghost btn-sm" id="refreshModelStatus">
                                     <i class="fas fa-sync-alt"></i>
-                                    ??
+                                    刷新
                                 </button>
                             </div>
                             <div class="content-card-body">
@@ -154,7 +148,6 @@
                     <div class="image-generation">
                         <div class="content-card-header">
                             <h2 class="content-card-title">AI 图像生成</h2>
-                            <p class="content-card-subtitle">使用先进的 AI 模型生成高质量图像</p>
                         </div>
 
                         <div class="generation-layout">
@@ -275,7 +268,6 @@
                     <div class="api-keys">
                         <div class="content-card-header">
                             <h2 class="content-card-title">API 密钥管理</h2>
-                            <p class="content-card-subtitle">安全地管理您的 API 密钥</p>
                         </div>
 
                         <div class="keys-status">
@@ -487,7 +479,7 @@
                                     </div>
                                     <div>
                                         <h4>a.zhai's ToolBox</h4>
-                                        <p class="text-tertiary">版本 2.0.0</p>
+                                        <p class="text-tertiary">版本 1.1.2</p>
                                     </div>
                                 </div>
                                 <div class="about-links">
@@ -506,7 +498,7 @@
                                 </div>
                                 <div class="about-footer">
                                     <p class="text-sm text-tertiary">© 2025 a.zhai's ToolBox. 保留所有权利。</p>
-                                    <p class="text-xs text-muted">基于 Flask 和现代 Web 技术构建</p>
+                                    <p class="text-xs text-muted">Based on Flask and modern web technologies</p>
                                 </div>
                             </div>
                         </div>

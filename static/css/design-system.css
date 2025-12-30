@@ -8,20 +8,20 @@
   --color-bg-primary: #1a1a1a;
   --color-bg-secondary: #252525;
   --color-bg-tertiary: #323232;
-  --color-bg-surface: rgba(245, 240, 230, 0.03);
-  --color-bg-surface-hover: rgba(245, 240, 230, 0.06);
-  --color-bg-surface-active: rgba(245, 240, 230, 0.09);
-  --color-bg-surface-elevated: rgba(245, 240, 230, 0.08);
+  --color-bg-surface: rgba(255, 255, 255, 0.03);
+  --color-bg-surface-hover: rgba(255, 255, 255, 0.06);
+  --color-bg-surface-active: rgba(255, 255, 255, 0.09);
+  --color-bg-surface-elevated: rgba(255, 255, 255, 0.08);
   --color-bg-surface-highlight: rgba(137, 207, 240, 0.08);
-  --color-bg-surface-subtle: rgba(245, 240, 230, 0.02);
+  --color-bg-surface-subtle: rgba(255, 255, 255, 0.02);
 
-  --color-text-primary: #f5f0e6;
-  --color-text-secondary: #d1cbc1;
-  --color-text-tertiary: #a8a39e;
-  --color-text-muted: #8a8279;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #e0e0e0;
+  --color-text-tertiary: #a0a0a0;
+  --color-text-muted: #808080;
 
-  --color-border: rgba(245, 240, 230, 0.08);
-  --color-border-hover: rgba(245, 240, 230, 0.16);
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-hover: rgba(255, 255, 255, 0.16);
   --color-border-focus: rgba(137, 207, 240, 0.5);
 
   /* 品牌色 - 马卡龙色系 */
@@ -48,7 +48,7 @@
   --gradient-primary: linear-gradient(135deg, #89CFF0 0%, #6FB8E0 100%);
   --gradient-secondary: linear-gradient(135deg, #FFB7C5 0%, #E09FAF 100%);
   --gradient-accent: linear-gradient(135deg, #98FB98 0%, #7CE67C 100%);
-  --gradient-surface: linear-gradient(135deg, rgba(245, 240, 230, 0.03) 0%, rgba(245, 240, 230, 0.01) 100%);
+  --gradient-surface: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
 
   /* 阴影 */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -113,9 +113,9 @@
 
 /* ===== 浅色主题 ===== */
 [data-theme="light"] {
-  --color-bg-primary: #f5f0e6;
-  --color-bg-secondary: #e8e0d5;
-  --color-bg-tertiary: #dcd4c9;
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f5f5f5;
+  --color-bg-tertiary: #eeeeee;
   --color-bg-surface: rgba(26, 26, 26, 0.015);
   --color-bg-surface-hover: rgba(26, 26, 26, 0.03);
   --color-bg-surface-active: rgba(26, 26, 26, 0.06);

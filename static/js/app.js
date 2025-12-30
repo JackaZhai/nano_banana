@@ -21,9 +21,7 @@ const DOM = {
     // 顶部栏
     pageTitle: document.getElementById('pageTitle'),
     pageSubtitle: document.getElementById('pageSubtitle'),
-    searchInput: document.querySelector('.search-input'),
     themeToggle: document.getElementById('themeToggle'),
-    notificationsBtn: document.getElementById('notificationsBtn'),
 
     // 页面容器
     pageSections: document.querySelectorAll('.page-section'),
